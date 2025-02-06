@@ -251,95 +251,74 @@
     <!-- Подключение Telegram Web App API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        // Создание пиксельных частиц
-        const pixelContainer = document.getElementById('pixelContainer');
-        for (let i = 0; i < 50; i++) {
-            const pixel = document.createElement('div');
-            pixel.classList.add('pixel');
-            pixel.style.left = Math.random() * 100 + 'vw';
-            pixel.style.animationDuration = Math.random() * 5 + 2 + 's';
-            pixelContainer.appendChild(pixel);
-        }
-
-        // Обработка отправки формы
         const form = document.getElementById('applicationForm');
+        const statusMessage = document.getElementById('status');
         const loadingSpinner = document.getElementById('loadingSpinner');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Получаем данные из формы
-            const nickname = document.getElementById('nickname').value.trim();
-            const discord = document.getElementById('discord').value.trim();
-            const reason = document.getElementById('reason').value.trim();
-
-            // Валидация никнейма
-            if (!nickname.match(/^[a-zA-Z0-9_]{3,16}$/)) {
-                alert("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
-                return;
-            }
-
-            // Ограничение длины Discord-аккаунта
-            if (discord.length > 32) {
-                alert("Discord-аккаунт не может быть длиннее 32 символов.");
-                return;
-            }
-
-            // Ограничение длины причины
-            if (reason.length > 500) {
-                alert("Причина не может быть длиннее 500 символов.");
-                return;
-            }
-
-            // Защита от XSS (очистка данных)
-            const sanitizedNickname = DOMPurify.sanitize(nickname);
-            const sanitizedDiscord = DOMPurify.sanitize(discord);
-            const sanitizedReason = DOMPurify.sanitize(reason);
-            
-                    const form = document.getElementById('applicationForm');
-        const statusMessage = document.getElementById('status');
-
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            // Собираем данные из формы
-            const nickname = document.getElementById('nickname').value;
-            const discord = document.getElementById('discord').value;
-            const reason = document.getElementById('reason').value;
-
-            // Создаём JSON-объект
-            const data = {
-                nickname: nickname,
-                discord: discord,
-                reason: reason
-            };
-
-            // Логируем данные
-            console.log("Собранные данные:", data);
-
-            // Отправляем данные в Telegram WebApp
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.sendData(JSON.stringify(data));
-                console.log("Данные отправлены через Telegram WebApp");
-                statusMessage.textContent = "Заявка отправлена!";
-                window.Telegram.WebApp.close();
-            } else {
-                console.error("Telegram WebApp API недоступен");
-                statusMessage.textContent = "Ошибка: Telegram WebApp API недоступен";
-
             // Показываем спиннер загрузки
             loadingSpinner.style.display = 'block';
 
-            // Отправляем данные в бот через Telegram Web App
-            const data = { nickname: sanitizedNickname, discord: sanitizedDiscord, reason: sanitizedReason };
-            console.log("Отправленные данные:", data); // Логирование в консоль
-            Telegram.WebApp.sendData(JSON.stringify(data));
-            Telegram.WebApp.close();
+            try {
+                // Получаем данные из формы
+                const nickname = document.getElementById('nickname').value.trim();
+                const discord = document.getElementById('discord').value.trim();
+                const reason = document.getElementById('reason').value.trim();
 
-            // Скрываем спиннер после отправки
-            setTimeout(() => {
-                loadingSpinner.style.display = 'none';
-            }, 1000);
+                // Валидация никнейма
+                if (!nickname.match(/^[a-zA-Z0-9_]{3,16}$/)) {
+                    alert("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
+                    return;
+                }
+
+                // Ограничение длины Discord-аккаунта
+                if (discord.length > 32) {
+                    alert("Discord-аккаунт не может быть длиннее 32 символов.");
+                    return;
+                }
+
+                // Ограничение длины причины
+                if (reason.length > 500) {
+                    alert("Причина не может быть длиннее 500 символов.");
+                    return;
+                }
+
+                // Защита от XSS (очистка данных)
+                const sanitizedNickname = DOMPurify.sanitize(nickname);
+                const sanitizedDiscord = DOMPurify.sanitize(discord);
+                const sanitizedReason = DOMPurify.sanitize(reason);
+
+                // Создаём JSON-объект
+                const data = {
+                    nickname: sanitizedNickname,
+                    discord: sanitizedDiscord,
+                    reason: sanitizedReason
+                };
+
+                // Логируем данные
+                console.log("Собранные данные:", data);
+
+                // Отправляем данные в Telegram WebApp
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.sendData(JSON.stringify(data));
+                    console.log("Данные отправлены через Telegram WebApp");
+                    statusMessage.textContent = "Заявка отправлена!";
+                    window.Telegram.WebApp.close();
+                } else {
+                    console.error("Telegram WebApp API недоступен");
+                    statusMessage.textContent = "Ошибка: Telegram WebApp API недоступен";
+                }
+            } catch (error) {
+                console.error("Ошибка при отправке данных:", error);
+                statusMessage.textContent = "Произошла ошибка. Попробуйте снова.";
+            } finally {
+                // Скрываем спиннер после отправки
+                setTimeout(() => {
+                    loadingSpinner.style.display = 'none';
+                }, 1000);
+            }
         });
     </script>
     <!-- Подключение библиотеки DOMPurify для защиты от XSS -->
