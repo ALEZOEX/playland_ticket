@@ -14,7 +14,7 @@
             margin: 0;
             overflow: hidden;
             font-family: 'Arial', sans-serif;
-            background: url('https://i.imgur.com/GrassBlock.jpg') no-repeat center center fixed; /* Текстура травы */
+            background: url('images/grass_background.jpg') no-repeat center center fixed; /* Текстура травы */
             background-size: cover;
             display: flex;
             justify-content: center;
@@ -32,13 +32,12 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: -1;
+            z-index: 1; /* Блоки падают перед фоном, но за формой */
         }
         .block {
             position: absolute;
             width: 50px;
             height: 50px;
-            background: url('https://i.imgur.com/FallingBlock.png'); /* Текстура блока */
             background-size: cover;
             animation: fall linear infinite;
         }
@@ -64,6 +63,7 @@
             text-align: center;
             position: relative;
             animation: fadeIn 1s ease-in-out;
+            z-index: 2; /* Форма выше падающих блоков */
         }
         @keyframes fadeIn {
             from {
@@ -187,28 +187,6 @@
                 transform: translateY(-50px);
             }
         }
-
-        /* Дополнительные визуальные элементы */
-        .minecraft-icons {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-        .minecraft-icons img {
-            width: 40px;
-            height: 40px;
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
     </style>
 </head>
 <body>
@@ -236,14 +214,7 @@
             </button>
             <div class="loading-spinner" id="loadingSpinner"></div>
         </form>
-        <img src="https://i.imgur.com/MinecraftLogo.png" alt="Logo" class="logo-animation" id="logoAnimation">
-    </div>
-
-    <!-- Иконки Minecraft -->
-    <div class="minecraft-icons">
-        <img src="https://i.imgur.com/DiamondIcon.png" alt="Diamond">
-        <img src="https://i.imgur.com/PickaxeIcon.png" alt="Pickaxe">
-        <img src="https://i.imgur.com/CreeperIcon.png" alt="Creeper">
+        <img src="images/playland_logo.png" alt="Logo" class="logo-animation" id="logoAnimation">
     </div>
 
     <!-- Подключение Telegram Web App API -->
@@ -251,11 +222,19 @@
     <script>
         // Создание падающих блоков
         const fallingBlocks = document.getElementById('fallingBlocks');
+        const images = [
+            'images/falling_block.png',
+            'images/diamond_icon.png',
+            'images/pickaxe_icon.png',
+            'images/creeper_icon.png'
+        ];
+
         for (let i = 0; i < 20; i++) {
             const block = document.createElement('div');
             block.classList.add('block');
             block.style.left = Math.random() * 100 + 'vw';
             block.style.animationDuration = Math.random() * 5 + 3 + 's';
+            block.style.backgroundImage = `url('${images[Math.floor(Math.random() * images.length)]}')`;
             fallingBlocks.appendChild(block);
         }
 
