@@ -3,315 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Подать заявку | PLAYLAND</title>
-    <!-- Подключение шрифта Press Start 2P -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!-- Подключение Font Awesome для иконок -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <style>
-        /* Общий стиль страницы */
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Press Start 2P', cursive; /* Пиксельный шрифт */
-            background: url('images/grass_background.jpg') no-repeat center center fixed; /* Текстура травы */
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            position: relative;
-            color: white;
-        }
-
-        /* Пиксельные частицы */
-        .pixel-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .pixel {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.5);
-            animation: fall linear infinite;
-        }
-        @keyframes fall {
-            0% {
-                transform: translateY(-100%);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-
-        /* Форма */
-        .form-container {
-            background: rgba(0, 0, 0, 0.7); /* Прозрачный фон */
-            padding: 40px;
-            border: 2px solid #000; /* Пиксельная граница */
-            box-shadow: 4px 4px 0px #000; /* Чёткая тень */
-            border-radius: 5px;
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            position: relative;
-            animation: fadeIn 1s ease-in-out;
-            z-index: 2;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Заголовок */
-        h2 {
-            font-size: 24px;
-            color: #ffcc00; /* Цвет как у золотых блоков */
-            text-shadow: 2px 2px 0px #000; /* Пиксельная тень */
-            margin-bottom: 20px;
-            animation: glow 2s infinite alternate; /* Мерцание заголовка */
-        }
-        @keyframes glow {
-            from {
-                text-shadow: 2px 2px 0px #000;
-            }
-            to {
-                text-shadow: 4px 4px 10px #ffcc00;
-            }
-        }
-
-        /* Поле ввода */
-        label {
-            font-weight: bold;
-            color: #ffffff;
-            text-align: left;
-            display: block;
-            margin-bottom: 5px;
-            animation: slideIn 0.5s ease-in-out forwards;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 2px solid #ffcc00;
-            border-radius: 3px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            font-family: 'Press Start 2P', cursive; /* Пиксельный шрифт */
-            transition: all 0.3s ease-in-out;
-            animation: fadeIn 1s ease-in-out;
-        }
-        input:focus, textarea:focus {
-            border-color: #00ff00; /* Цвет как у изумрудных блоков */
-            box-shadow: 2px 2px 0px #000; /* Пиксельная тень */
-            transform: scale(1.02);
-        }
-
-        /* Кнопка */
-        button {
-            width: 100%;
-            padding: 14px;
-            font-size: 18px;
-            background: linear-gradient(135deg, #ffcc00, #ff9900); /* Градиент как у золотых блоков */
-            color: white;
-            border: 2px solid #000; /* Пиксельная граница */
-            border-radius: 3px;
-            cursor: pointer;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            position: relative;
-            overflow: hidden;
-            animation: pulse 2s infinite; /* Пульсация кнопки */
-        }
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.3);
-            transition: left 0.3s ease-in-out;
-        }
-        button:hover::before {
-            left: 100%;
-        }
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 4px 4px 0px #000; /* Пиксельная тень */
-        }
-        button:active {
-            transform: scale(0.98);
-        }
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.02);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* Спиннер загрузки */
-        .loading-spinner {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-        }
-        .block {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #ffcc00;
-            animation: pixelSpin 1s infinite linear;
-        }
-        .block:nth-child(1) { transform: rotate(0deg) translate(30px); }
-        .block:nth-child(2) { transform: rotate(90deg) translate(30px); }
-        .block:nth-child(3) { transform: rotate(180deg) translate(30px); }
-        .block:nth-child(4) { transform: rotate(270deg) translate(30px); }
-        @keyframes pixelSpin {
-            0% {
-                transform: rotate(0deg) translate(30px);
-            }
-            100% {
-                transform: rotate(360deg) translate(30px);
-            }
-        }
-
-        /* Текст спиннера */
-        .loading-text {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 14px;
-            color: white;
-            font-family: 'Press Start 2P', cursive;
-            text-shadow: 2px 2px 0px #000; /* Пиксельная тень для текста */
-            background: rgba(0, 0, 0, 0.7); /* Контрастный фон */
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-    </style>
+    <title>Подача заявки</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <!-- Пиксельные частицы -->
-    <div class="pixel-container" id="pixelContainer"></div>
+    <h1>Форма подачи заявки</h1>
+    <form id="applicationForm">
+        <label for="nickname">Никнейм:</label><br>
+        <input type="text" id="nickname" name="nickname" required><br><br>
 
-    <!-- Форма -->
-    <div class="form-container">
-        <h2>PLAYLAND</h2>
-        <p style="font-size: 14px;">Подай заявку и присоединяйся к приключению!</p>
-        <form id="applicationForm">
-            <div class="mb-3">
-                <label for="nickname" class="form-label">Никнейм:</label>
-                <input type="text" class="form-control" id="nickname" name="nickname" required pattern="^[a-zA-Z0-9_]{3,16}$" title="Только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.">
-            </div>
-            <div class="mb-3">
-                <label for="discord" class="form-label">Discord-аккаунт (необязательно):</label>
-                <input type="text" class="form-control" id="discord" name="discord" pattern="^.{0,32}$" title="Максимум 32 символа.">
-            </div>
-            <div class="mb-3">
-                <label for="reason" class="form-label">Почему ты хочешь присоединиться? (необязательно):</label>
-                <textarea class="form-control" id="reason" name="reason" rows="4" maxlength="500"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt me-2"></i>Отправить заявку
-            </button>
-            <div class="loading-spinner" id="loadingSpinner">
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="loading-text">Отправка...</div>
-            </div>
-        </form>
-    </div>
+        <label for="discord">Discord:</label><br>
+        <input type="text" id="discord" name="discord"><br><br>
 
-    <!-- Подключение Telegram Web App API -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <label for="reason">Причина:</label><br>
+        <textarea id="reason" name="reason"></textarea><br><br>
+
+        <button type="submit">Отправить заявку</button>
+    </form>
+
     <script>
-        // Создание пиксельных частиц
-        const pixelContainer = document.getElementById('pixelContainer');
-        for (let i = 0; i < 50; i++) {
-            const pixel = document.createElement('div');
-            pixel.classList.add('pixel');
-            pixel.style.left = Math.random() * 100 + 'vw';
-            pixel.style.animationDuration = Math.random() * 5 + 2 + 's';
-            pixelContainer.appendChild(pixel);
-        }
-
-        // Обработка отправки формы
         const form = document.getElementById('applicationForm');
-        const loadingSpinner = document.getElementById('loadingSpinner');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
 
-            // Получаем данные из формы
-            const nickname = document.getElementById('nickname').value.trim();
-            const discord = document.getElementById('discord').value.trim();
-            const reason = document.getElementById('reason').value.trim();
+            // Собираем данные из формы
+            const nickname = document.getElementById('nickname').value;
+            const discord = document.getElementById('discord').value;
+            const reason = document.getElementById('reason').value;
 
-            // Валидация никнейма
-            if (!nickname.match(/^[a-zA-Z0-9_]{3,16}$/)) {
-                alert("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
-                return;
-            }
+            // Создаём JSON-объект
+            const data = {
+                nickname: nickname,
+                discord: discord,
+                reason: reason
+            };
 
-            // Ограничение длины Discord-аккаунта
-            if (discord.length > 32) {
-                alert("Discord-аккаунт не может быть длиннее 32 символов.");
-                return;
-            }
-
-            // Ограничение длины причины
-            if (reason.length > 500) {
-                alert("Причина не может быть длиннее 500 символов.");
-                return;
-            }
-
-            // Защита от XSS (очистка данных)
-            const sanitizedNickname = DOMPurify.sanitize(nickname);
-            const sanitizedDiscord = DOMPurify.sanitize(discord);
-            const sanitizedReason = DOMPurify.sanitize(reason);
-
-            // Показываем спиннер загрузки
-            loadingSpinner.style.display = 'block';
-
-            // Отправляем данные в бот через Telegram Web App
-            const data = { nickname: sanitizedNickname, discord: sanitizedDiscord, reason: sanitizedReason };
-            console.log("Отправленные данные:", data); // Логирование в консоль
-            Telegram.WebApp.sendData(JSON.stringify(data));
-            Telegram.WebApp.close();
-
-            // Скрываем спиннер после отправки
-            setTimeout(() => {
-                loadingSpinner.style.display = 'none';
-            }, 1000);
+            // Отправляем данные в Telegram WebApp
+            window.Telegram.WebApp.sendData(JSON.stringify(data));
+            window.Telegram.WebApp.close();
         });
     </script>
-    <!-- Подключение библиотеки DOMPurify для защиты от XSS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 </body>
 </html>
