@@ -39,12 +39,13 @@
             width: 50px;
             height: 50px;
             background-size: cover;
+            opacity: 0.7; /* Прозрачность блоков */
             animation: fall linear infinite;
         }
         @keyframes fall {
             0% {
                 transform: translateY(-100%);
-                opacity: 1;
+                opacity: 0.7;
             }
             100% {
                 transform: translateY(100vh);
@@ -166,27 +167,6 @@
                 transform: rotate(360deg);
             }
         }
-
-        /* Логотип */
-        .logo-animation {
-            position: absolute;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px; /* Уменьшенный размер логотипа */
-            opacity: 0;
-            animation: logo-rise 1s ease-in-out forwards;
-        }
-        @keyframes logo-rise {
-            0% {
-                opacity: 0;
-                transform: translateY(0);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(-50px);
-            }
-        }
     </style>
 </head>
 <body>
@@ -214,7 +194,6 @@
             </button>
             <div class="loading-spinner" id="loadingSpinner"></div>
         </form>
-        <img src="images/playland_logo.png" alt="Logo" class="logo-animation" id="logoAnimation">
     </div>
 
     <!-- Подключение Telegram Web App API -->
@@ -239,7 +218,6 @@
 
         const form = document.getElementById('applicationForm');
         const loadingSpinner = document.getElementById('loadingSpinner');
-        const logoAnimation = document.getElementById('logoAnimation');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -258,13 +236,6 @@
                 loadingSpinner.style.display = 'none';
                 return;
             }
-
-            // Анимация логотипа
-            setTimeout(() => {
-                logoAnimation.style.display = 'block';
-                const audio = new Audio('https://www.soundjay.com/misc/sounds/whoosh.mp3'); // Звук полёта
-                audio.play();
-            }, 1000);
 
             // Отправляем данные в бот через Telegram Web App
             const data = { nickname, discord, reason };
