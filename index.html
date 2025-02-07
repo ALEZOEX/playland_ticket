@@ -214,10 +214,7 @@
     </style>
 </head>
 <body>
-    <!-- Пиксельные частицы -->
     <div class="pixel-container" id="pixelContainer"></div>
-
-    <!-- Форма -->
     <div class="form-container">
         <h2>PLAYLAND</h2>
         <p style="font-size: 14px;">Подай заявку и присоединяйся к приключению!</p>
@@ -247,9 +244,16 @@
         </form>
     </div>
 
-    <!-- Подключение Telegram Web App API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        // Проверка доступности Telegram WebApp API
+        if (!window.Telegram || !window.Telegram.WebApp) {
+            alert("Откройте это приложение в Telegram.");
+            console.error("Telegram WebApp API недоступен.");
+        } else {
+            console.log("Telegram WebApp API доступен.");
+        }
+
         const form = document.getElementById('applicationForm');
         const loadingSpinner = document.getElementById('loadingSpinner');
 
@@ -307,5 +311,7 @@
             }
         });
     </script>
+</body>
+</html>
 </body>
 </html>
