@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Подать заявку | PLAYLAND</title>
-    <!-- Подключение шрифта Press Start 2P -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!-- Подключение Font Awesome для иконок -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <style>
         /* Общий стиль страницы */
         body {
@@ -224,18 +223,18 @@
         <p style="font-size: 14px;">Подай заявку и присоединяйся к приключению!</p>
         <form id="applicationForm">
             <div class="mb-3">
-                <label for="nickname" class="form-label">Никнейм:</label>
-                <input type="text" class="form-control" id="nickname" name="nickname" required pattern="^[a-zA-Z0-9_]{3,16}$" title="Только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.">
+                <label for="nickname">Никнейм:</label>
+                <input type="text" id="nickname" name="nickname" required pattern="^[a-zA-Z0-9_]{3,16}$" title="Только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.">
             </div>
             <div class="mb-3">
-                <label for="discord" class="form-label">Discord-аккаунт (необязательно):</label>
-                <input type="text" class="form-control" id="discord" name="discord" pattern="^.{0,32}$" title="Максимум 32 символа.">
+                <label for="discord">Discord-аккаунт (необязательно):</label>
+                <input type="text" id="discord" name="discord" pattern="^.{0,32}$" title="Максимум 32 символа.">
             </div>
             <div class="mb-3">
-                <label for="reason" class="form-label">Почему ты хочешь присоединиться? (необязательно):</label>
-                <textarea class="form-control" id="reason" name="reason" rows="4" maxlength="500"></textarea>
+                <label for="reason">Почему ты хочешь присоединиться? (необязательно):</label>
+                <textarea id="reason" name="reason" rows="4" maxlength="500"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit">
                 <i class="fas fa-sign-in-alt me-2"></i>Отправить заявку
             </button>
             <div class="loading-spinner" id="loadingSpinner">
@@ -252,76 +251,61 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         const form = document.getElementById('applicationForm');
-        const statusMessage = document.getElementById('status');
         const loadingSpinner = document.getElementById('loadingSpinner');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            // Показываем спиннер загрузки
             loadingSpinner.style.display = 'block';
 
             try {
+                // Проверка доступности Telegram WebApp API
+                if (!window.Telegram || !window.Telegram.WebApp) {
+                    throw new Error("Telegram WebApp API недоступен.");
+                }
+
                 // Получаем данные из формы
                 const nickname = document.getElementById('nickname').value.trim();
                 const discord = document.getElementById('discord').value.trim();
                 const reason = document.getElementById('reason').value.trim();
 
-                // Валидация никнейма
+                // Валидация данных
                 if (!nickname.match(/^[a-zA-Z0-9_]{3,16}$/)) {
-                    alert("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
-                    return;
+                    throw new Error("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
                 }
-
-                // Ограничение длины Discord-аккаунта
                 if (discord.length > 32) {
-                    alert("Discord-аккаунт не может быть длиннее 32 символов.");
-                    return;
+                    throw new Error("Discord-аккаунт не может быть длиннее 32 символов.");
                 }
-
-                // Ограничение длины причины
                 if (reason.length > 500) {
-                    alert("Причина не может быть длиннее 500 символов.");
-                    return;
+                    throw new Error("Причина не может быть длиннее 500 символов.");
                 }
 
-                // Защита от XSS (очистка данных)
+                // Очистка данных
                 const sanitizedNickname = DOMPurify.sanitize(nickname);
                 const sanitizedDiscord = DOMPurify.sanitize(discord);
                 const sanitizedReason = DOMPurify.sanitize(reason);
 
-                // Создаём JSON-объект
+                // Формируем данные для отправки
                 const data = {
                     nickname: sanitizedNickname,
                     discord: sanitizedDiscord,
                     reason: sanitizedReason
                 };
 
-                // Логируем данные
-                console.log("Собранные данные:", data);
+                console.log("Данные для отправки:", data);
 
                 // Отправляем данные в Telegram WebApp
-                if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.sendData(JSON.stringify(data));
-                    console.log("Данные отправлены через Telegram WebApp");
-                    statusMessage.textContent = "Заявка отправлена!";
-                    window.Telegram.WebApp.close();
-                } else {
-                    console.error("Telegram WebApp API недоступен");
-                    statusMessage.textContent = "Ошибка: Telegram WebApp API недоступен";
-                }
+                window.Telegram.WebApp.sendData(JSON.stringify(data));
+                console.log("Данные отправлены через Telegram WebApp");
+
+                // Закрываем Web App
+                window.Telegram.WebApp.close();
             } catch (error) {
-                console.error("Ошибка при отправке данных:", error);
-                statusMessage.textContent = "Произошла ошибка. Попробуйте снова.";
+                console.error("Ошибка:", error.message);
+                alert(`Ошибка: ${error.message}`);
             } finally {
-                // Скрываем спиннер после отправки
-                setTimeout(() => {
-                    loadingSpinner.style.display = 'none';
-                }, 1000);
+                loadingSpinner.style.display = 'none';
             }
         });
     </script>
-    <!-- Подключение библиотеки DOMPurify для защиты от XSS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 </body>
 </html>
