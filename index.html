@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,63 +8,89 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <style>
+        /* Переменные для единого стиля */
+        :root {
+            --primary-color: #ffcc00;
+            --secondary-color: #00ff00;
+            --accent-color: #ff9900;
+            --text-color: #ffffff;
+            --border-color: #000000;
+            --background-overlay: rgba(0, 0, 0, 0.7);
+            --glow-color: rgba(255, 204, 0, 0.7);
+            --pixel-shadow: 4px 4px 0px #000;
+        }
+
+        /* Сброс стилей и общие настройки */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         /* Общий стиль страницы */
         body {
             margin: 0;
-            overflow: hidden;
-            font-family: 'Press Start 2P', cursive; /* Пиксельный шрифт */
-            background: url('images/grass_background.jpg') no-repeat center center fixed; /* Текстура травы */
+            overflow-x: hidden;
+            font-family: 'Press Start 2P', cursive;
+            background: url('https://i.imgur.com/8UVKBK7.jpg') no-repeat center center fixed;
             background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             position: relative;
-            color: white;
+            color: var(--text-color);
+            padding: 20px;
         }
 
         /* Пиксельные частицы */
         .pixel-container {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
             z-index: 1;
+            overflow: hidden;
         }
+        
         .pixel {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 5px var(--glow-color);
             animation: fall linear infinite;
         }
+        
         @keyframes fall {
             0% {
-                transform: translateY(-100%);
+                transform: translateY(-100%) rotate(0deg);
                 opacity: 1;
             }
             100% {
-                transform: translateY(100vh);
+                transform: translateY(100vh) rotate(360deg);
                 opacity: 0;
             }
         }
 
         /* Форма */
         .form-container {
-            background: rgba(0, 0, 0, 0.7); /* Прозрачный фон */
-            padding: 40px;
-            border: 2px solid #000; /* Пиксельная граница */
-            box-shadow: 4px 4px 0px #000; /* Чёткая тень */
-            border-radius: 5px;
+            background: var(--background-overlay);
+            padding: 30px;
+            border: 4px solid var(--border-color);
+            box-shadow: var(--pixel-shadow);
+            border-radius: 10px;
             width: 100%;
             max-width: 500px;
             text-align: center;
             position: relative;
             animation: fadeIn 1s ease-in-out;
             z-index: 2;
+            backdrop-filter: blur(5px);
         }
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -76,65 +102,143 @@
             }
         }
 
-        /* Заголовок */
-        h2 {
-            font-size: 24px;
-            color: #ffcc00; /* Цвет как у золотых блоков */
-            text-shadow: 2px 2px 0px #000; /* Пиксельная тень */
-            margin-bottom: 20px;
-            animation: glow 2s infinite alternate; /* Мерцание заголовка */
+        /* Логотип и заголовок */
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            animation: float 3s ease-in-out infinite;
         }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        h2 {
+            font-size: 28px;
+            color: var(--primary-color);
+            text-shadow: 3px 3px 0px var(--border-color);
+            margin-bottom: 15px;
+            animation: glow 2s infinite alternate;
+            letter-spacing: 2px;
+        }
+        
         @keyframes glow {
             from {
-                text-shadow: 2px 2px 0px #000;
+                text-shadow: 2px 2px 0px var(--border-color);
             }
             to {
-                text-shadow: 4px 4px 10px #ffcc00;
+                text-shadow: 4px 4px 10px var(--glow-color);
             }
         }
+        
+        .subtitle {
+            font-size: 14px;
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--secondary-color);
+            animation: expandLine 2s ease-in-out infinite;
+        }
+        
+        @keyframes expandLine {
+            0% { width: 0; left: 50%; }
+            50% { width: 100%; left: 0; }
+            100% { width: 0; left: 50%; }
+        }
 
+        /* Группы полей ввода */
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+            text-align: left;
+        }
+        
+        .input-group:nth-child(1) { animation-delay: 0.1s; }
+        .input-group:nth-child(2) { animation-delay: 0.2s; }
+        .input-group:nth-child(3) { animation-delay: 0.3s; }
+        
         /* Поле ввода */
         label {
             font-weight: bold;
-            color: #ffffff;
+            color: var(--text-color);
             text-align: left;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             animation: slideIn 0.5s ease-in-out forwards;
+            font-size: 12px;
         }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
         input, textarea {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
-            border: 2px solid #ffcc00;
-            border-radius: 3px;
-            background: rgba(0, 0, 0, 0.5);
+            margin-bottom: 5px;
+            border: 3px solid var(--primary-color);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.6);
             color: white;
-            font-family: 'Press Start 2P', cursive; /* Пиксельный шрифт */
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
             transition: all 0.3s ease-in-out;
             animation: fadeIn 1s ease-in-out;
         }
+        
         input:focus, textarea:focus {
-            border-color: #00ff00; /* Цвет как у изумрудных блоков */
-            box-shadow: 2px 2px 0px #000; /* Пиксельная тень */
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            outline: none;
             transform: scale(1.02);
+        }
+        
+        .input-hint {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 5px;
+            display: block;
         }
 
         /* Кнопка */
+        .btn-container {
+            position: relative;
+            margin-top: 30px;
+        }
+        
         button {
             width: 100%;
-            padding: 14px;
-            font-size: 18px;
-            background: linear-gradient(135deg, #ffcc00, #ff9900); /* Градиент как у золотых блоков */
-            color: white;
-            border: 2px solid #000; /* Пиксельная граница */
-            border-radius: 3px;
+            padding: 16px;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: #000;
+            font-weight: bold;
+            border: 3px solid var(--border-color);
+            border-radius: 5px;
             cursor: pointer;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
             overflow: hidden;
-            animation: pulse 2s infinite; /* Пульсация кнопки */
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 1px 1px 0 #fff;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
         }
+        
         button::before {
             content: '';
             position: absolute;
@@ -143,28 +247,31 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.3);
-            transition: left 0.3s ease-in-out;
+            transition: left 0.5s ease-in-out;
         }
+        
         button:hover::before {
             left: 100%;
         }
+        
         button:hover {
             transform: scale(1.05);
-            box-shadow: 4px 4px 0px #000; /* Пиксельная тень */
+            box-shadow: 0 0 20px var(--glow-color);
         }
+        
         button:active {
             transform: scale(0.98);
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
         }
+        
         @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.02);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        button i {
+            margin-right: 8px;
         }
 
         /* Спиннер загрузки */
@@ -177,90 +284,311 @@
             width: 60px;
             height: 60px;
         }
+        
         .block {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #ffcc00;
-            animation: pixelSpin 1s infinite linear;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            animation: pixelSpin 1.5s infinite linear;
+            box-shadow: 2px 2px 0 #000;
         }
-        .block:nth-child(1) { transform: rotate(0deg) translate(30px); }
-        .block:nth-child(2) { transform: rotate(90deg) translate(30px); }
-        .block:nth-child(3) { transform: rotate(180deg) translate(30px); }
-        .block:nth-child(4) { transform: rotate(270deg) translate(30px); }
+        
+        .block:nth-child(1) { transform: rotate(0deg) translate(30px); animation-delay: 0s; }
+        .block:nth-child(2) { transform: rotate(90deg) translate(30px); animation-delay: 0.2s; }
+        .block:nth-child(3) { transform: rotate(180deg) translate(30px); animation-delay: 0.4s; }
+        .block:nth-child(4) { transform: rotate(270deg) translate(30px); animation-delay: 0.6s; }
+        
         @keyframes pixelSpin {
-            0% {
-                transform: rotate(0deg) translate(30px);
-            }
-            100% {
-                transform: rotate(360deg) translate(30px);
-            }
+            0% { transform: rotate(0deg) translate(30px); }
+            100% { transform: rotate(360deg) translate(30px); }
         }
 
         /* Текст спиннера */
         .loading-text {
             position: absolute;
-            bottom: -30px;
+            bottom: -40px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 14px;
             color: white;
             font-family: 'Press Start 2P', cursive;
-            text-shadow: 2px 2px 0px #000; /* Пиксельная тень для текста */
-            background: rgba(0, 0, 0, 0.7); /* Контрастный фон */
-            padding: 5px 10px;
+            text-shadow: 2px 2px 0px #000;
+            background: var(--background-overlay);
+            padding: 8px 15px;
             border-radius: 5px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        /* Пиксельные декоративные элементы */
+        .pixel-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            z-index: 3;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .pixel-decoration:nth-child(1) {
+            top: -10px;
+            left: -10px;
+            background: var(--primary-color);
+        }
+        
+        .pixel-decoration:nth-child(2) {
+            top: -10px;
+            right: -10px;
+            background: var(--secondary-color);
+            animation-delay: 0.5s;
+        }
+        
+        .pixel-decoration:nth-child(3) {
+            bottom: -10px;
+            left: -10px;
+            background: var(--accent-color);
+            animation-delay: 1s;
+        }
+        
+        .pixel-decoration:nth-child(4) {
+            bottom: -10px;
+            right: -10px;
+            background: var(--primary-color);
+            animation-delay: 1.5s;
+        }
+        
+        /* Прогресс полей */
+        .progress-bar {
+            height: 6px;
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+        
+        /* Адаптивная верстка */
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 20px;
+                border-width: 3px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .subtitle {
+                font-size: 12px;
+            }
+            
+            input, textarea {
+                padding: 10px;
+                font-size: 10px;
+            }
+            
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            label {
+                font-size: 10px;
+            }
+            
+            .input-hint {
+                font-size: 8px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="pixel-container" id="pixelContainer"></div>
+    
     <div class="form-container">
+        <!-- Декоративные элементы -->
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        
+        <!-- Иконка сервера -->
+        <div class="logo">
+            <img src="https://i.imgur.com/QME5MyT.png" alt="PLAYLAND" width="80" height="80">
+        </div>
+        
         <h2>PLAYLAND</h2>
-        <p style="font-size: 14px;">Подай заявку и присоединяйся к приключению!</p>
+        <p class="subtitle">Подай заявку и присоединяйся к приключению!</p>
+        
         <form id="applicationForm">
-            <div class="mb-3">
-                <label for="nickname">Никнейм:</label>
-                <input type="text" id="nickname" name="nickname" required pattern="^[a-zA-Z0-9_]{3,16}$" title="Только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.">
+            <div class="input-group">
+                <label for="nickname">📝 Никнейм:</label>
+                <input type="text" id="nickname" name="nickname" required 
+                       pattern="^[a-zA-Z0-9_]{3,16}$" 
+                       title="Только латинские буквы, цифры и символ _. Длина от 3 до 16 символов."
+                       placeholder="Введите игровой ник">
+                <span class="input-hint">Только латинские буквы, цифры и символ _. От 3 до 16 символов.</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="nicknameProgress"></div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="discord">Discord-аккаунт (необязательно):</label>
-                <input type="text" id="discord" name="discord" pattern="^.{0,32}$" title="Максимум 32 символа.">
+            
+            <div class="input-group">
+                <label for="discord">🎮 Discord-аккаунт (необязательно):</label>
+                <input type="text" id="discord" name="discord" 
+                       pattern="^.{0,32}$" 
+                       title="Максимум 32 символа."
+                       placeholder="Например: username#1234">
+                <span class="input-hint">Максимум 32 символа</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="discordProgress"></div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="reason">Почему ты хочешь присоединиться? (необязательно):</label>
-                <textarea id="reason" name="reason" rows="4" maxlength="500"></textarea>
+            
+            <div class="input-group">
+                <label for="reason">💬 Почему ты хочешь присоединиться? (необязательно):</label>
+                <textarea id="reason" name="reason" rows="4" maxlength="500"
+                         placeholder="Расскажи немного о себе..."></textarea>
+                <span class="input-hint"><span id="reasonCounter">0</span>/500 символов</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="reasonProgress"></div>
+                </div>
             </div>
-            <button type="submit">
-                <i class="fas fa-sign-in-alt me-2"></i>Отправить заявку
-            </button>
-            <div class="loading-spinner" id="loadingSpinner">
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="loading-text">Отправка...</div>
+            
+            <div class="btn-container">
+                <button type="submit">
+                    <i class="fas fa-sign-in-alt"></i>Отправить заявку
+                </button>
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="loading-text">Отправка...</div>
+                </div>
             </div>
         </form>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        // Создание пиксельных частиц
+        const pixelContainer = document.getElementById('pixelContainer');
+        const particleCount = 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const pixel = document.createElement('div');
+            pixel.classList.add('pixel');
+            
+            // Случайные параметры для частиц
+            const size = Math.random() * 10 + 5;
+            const duration = Math.random() * 10 + 10;
+            const x = Math.random() * 100;
+            
+            pixel.style.width = `${size}px`;
+            pixel.style.height = `${size}px`;
+            pixel.style.left = `${x}%`;
+            pixel.style.animationDuration = `${duration}s`;
+            pixel.style.opacity = Math.random() * 0.5 + 0.3;
+            
+            // Случайный цвет между золотым, зеленым и белым
+            const colors = ['rgba(255, 204, 0, 0.7)', 'rgba(0, 255, 0, 0.5)', 'rgba(255, 255, 255, 0.3)'];
+            pixel.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            pixelContainer.appendChild(pixel);
+        }
+        
         // Проверка доступности Telegram WebApp API
         if (!window.Telegram || !window.Telegram.WebApp) {
-            alert("Откройте это приложение в Telegram.");
             console.error("Telegram WebApp API недоступен.");
         } else {
             console.log("Telegram WebApp API доступен.");
+            // Инициализация Telegram WebApp
+            window.Telegram.WebApp.expand();
+            
+            // Установка цветов темы
+            const themeParams = window.Telegram.WebApp.themeParams;
+            if (themeParams) {
+                document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#ffffff');
+                document.documentElement.style.setProperty('--background-overlay', themeParams.bg_color || 'rgba(0, 0, 0, 0.7)');
+            }
         }
 
+        // Получение элементов формы
         const form = document.getElementById('applicationForm');
         const loadingSpinner = document.getElementById('loadingSpinner');
+        const nickname = document.getElementById('nickname');
+        const discord = document.getElementById('discord');
+        const reason = document.getElementById('reason');
+        const reasonCounter = document.getElementById('reasonCounter');
+        
+        // Прогресс бары
+        const nicknameProgress = document.getElementById('nicknameProgress');
+        const discordProgress = document.getElementById('discordProgress');
+        const reasonProgress = document.getElementById('reasonProgress');
+        
+        // Отслеживание ввода для никнейма
+        nickname.addEventListener('input', () => {
+            const value = nickname.value.trim();
+            const isValid = /^[a-zA-Z0-9_]{3,16}$/.test(value);
+            
+            // Обновление стилей на основе валидности
+            if (isValid) {
+                nickname.style.borderColor = 'var(--secondary-color)';
+            } else {
+                nickname.style.borderColor = '#ff3333';
+            }
+            
+            // Обновление прогресс-бара
+            const progress = Math.min(value.length / 16 * 100, 100);
+            nicknameProgress.style.width = `${progress}%`;
+        });
+        
+        // Отслеживание ввода для Discord
+        discord.addEventListener('input', () => {
+            const value = discord.value.trim();
+            const progress = Math.min(value.length / 32 * 100, 100);
+            discordProgress.style.width = `${progress}%`;
+        });
+        
+        // Отслеживание ввода для причины
+        reason.addEventListener('input', () => {
+            const value = reason.value.trim();
+            const length = value.length;
+            
+            // Обновление счетчика
+            reasonCounter.textContent = length;
+            
+            // Обновление прогресс-бара
+            const progress = Math.min(length / 500 * 100, 100);
+            reasonProgress.style.width = `${progress}%`;
+            
+            // Изменение цвета счетчика при приближении к лимиту
+            if (length > 400) {
+                reasonCounter.style.color = '#ff9900';
+            } 
+            if (length > 450) {
+                reasonCounter.style.color = '#ff3333';
+            }
+            if (length <= 400) {
+                reasonCounter.style.color = '#aaa';
+            }
+        });
 
+        // Обработка отправки формы
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Показываем спиннер загрузки
             loadingSpinner.style.display = 'block';
-
+            
             try {
                 // Проверка доступности Telegram WebApp API
                 if (!window.Telegram || !window.Telegram.WebApp) {
@@ -268,25 +596,19 @@
                 }
 
                 // Получаем данные из формы
-                const nickname = document.getElementById('nickname').value.trim();
-                const discord = document.getElementById('discord').value.trim();
-                const reason = document.getElementById('reason').value.trim();
+                const nicknameValue = nickname.value.trim();
+                const discordValue = discord.value.trim();
+                const reasonValue = reason.value.trim();
 
                 // Валидация данных
-                if (!nickname.match(/^[a-zA-Z0-9_]{3,16}$/)) {
+                if (!nicknameValue.match(/^[a-zA-Z0-9_]{3,16}$/)) {
                     throw new Error("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
                 }
-                if (discord.length > 32) {
-                    throw new Error("Discord-аккаунт не может быть длиннее 32 символов.");
-                }
-                if (reason.length > 500) {
-                    throw new Error("Причина не может быть длиннее 500 символов.");
-                }
-
+                
                 // Очистка данных
-                const sanitizedNickname = DOMPurify.sanitize(nickname);
-                const sanitizedDiscord = DOMPurify.sanitize(discord);
-                const sanitizedReason = DOMPurify.sanitize(reason);
+                const sanitizedNickname = DOMPurify.sanitize(nicknameValue);
+                const sanitizedDiscord = DOMPurify.sanitize(discordValue);
+                const sanitizedReason = DOMPurify.sanitize(reasonValue);
 
                 // Формируем данные для отправки
                 const data = {
@@ -297,16 +619,21 @@
 
                 console.log("Данные для отправки:", data);
 
-                // Отправляем данные в Telegram WebApp
-                window.Telegram.WebApp.sendData(JSON.stringify(data));
-                console.log("Данные отправлены через Telegram WebApp");
-
-                // Закрываем Web App
-                window.Telegram.WebApp.close();
+                // Добавляем эффект задержки для лучшего UX
+                setTimeout(() => {
+                    // Отправляем данные в Telegram WebApp
+                    window.Telegram.WebApp.sendData(JSON.stringify(data));
+                    console.log("Данные отправлены через Telegram WebApp");
+                    
+                    // Закрываем Web App
+                    setTimeout(() => {
+                        window.Telegram.WebApp.close();
+                    }, 500);
+                }, 1000);
+                
             } catch (error) {
                 console.error("Ошибка:", error.message);
                 alert(`Ошибка: ${error.message}`);
-            } finally {
                 loadingSpinner.style.display = 'none';
             }
         });
