@@ -123,6 +123,8 @@
             margin-bottom: 15px;
             animation: glow 2s infinite alternate;
             letter-spacing: 2px;
+            word-break: break-word; /* Предотвращает выход текста за пределы контейнера */
+            overflow-wrap: break-word;
         }
         
         @keyframes glow {
@@ -212,6 +214,7 @@
             color: #aaa;
             margin-top: 5px;
             display: block;
+            line-height: 1.5; /* Увеличиваем междустрочный интервал для подсказок */
         }
 
         /* Кнопка */
@@ -382,7 +385,9 @@
             }
             
             h2 {
-                font-size: 20px;
+                font-size: 20px; /* Уменьшаем размер шрифта на маленьких экранах */
+                margin-bottom: 10px;
+                padding: 0 5px;
             }
             
             .subtitle {
@@ -405,6 +410,7 @@
             
             .input-hint {
                 font-size: 8px;
+                line-height: 1.6; /* Увеличиваем междустрочный интервал для маленьких экранов */
             }
         }
     </style>
