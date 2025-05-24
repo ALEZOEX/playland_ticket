@@ -6,7 +6,6 @@
     <title>Подать заявку | PLAYLAND</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <style>
         /* Переменные для единого стиля */
@@ -124,7 +123,7 @@
             margin-bottom: 15px;
             animation: glow 2s infinite alternate;
             letter-spacing: 2px;
-            word-break: break-word;
+            word-break: break-word; /* Предотвращает выход текста за пределы контейнера */
             overflow-wrap: break-word;
         }
 
@@ -215,50 +214,67 @@
             color: #aaa;
             margin-top: 5px;
             display: block;
-            line-height: 1.5;
+            line-height: 1.5; /* Увеличиваем междустрочный интервал для подсказок */
         }
 
-        /* Прогресс полей */
-        .progress-bar {
-            height: 6px;
+        /* Кнопка */
+        .btn-container {
+            position: relative;
+            margin-top: 30px;
+        }
+
+        button {
             width: 100%;
-            background: rgba(0,0,0,0.5);
-            border-radius: 3px;
-            margin-top: 10px;
+            padding: 16px;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: #000;
+            font-weight: bold;
+            border: 3px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
             overflow: hidden;
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 1px 1px 0 #fff;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
         }
 
-        .progress-fill {
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
             height: 100%;
-            width: 0%;
-            background: var(--secondary-color);
-            transition: width 0.3s ease;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s ease-in-out;
         }
 
-        /* Статус сообщения */
-        .status {
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            text-align: center;
-            font-weight: 500;
-            font-size: 10px;
-            display: none;
+        button:hover::before {
+            left: 100%;
         }
-        .status.success {
-            background: rgba(40, 167, 69, 0.2);
-            color: #28a745;
-            border: 1px solid #28a745;
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--glow-color);
         }
-        .status.error {
-            background: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-            border: 1px solid #dc3545;
+
+        button:active {
+            transform: scale(0.98);
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
         }
-        .status.info {
-            background: rgba(23, 162, 184, 0.2);
-            color: #17a2b8;
-            border: 1px solid #17a2b8;
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        button i {
+            margin-right: 8px;
         }
 
         /* Спиннер загрузки */
@@ -344,6 +360,23 @@
             animation-delay: 1.5s;
         }
 
+        /* Прогресс полей */
+        .progress-bar {
+            height: 6px;
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+
         /* Адаптивная верстка */
         @media (max-width: 600px) {
             .form-container {
@@ -352,7 +385,7 @@
             }
 
             h2 {
-                font-size: 20px;
+                font-size: 20px; /* Уменьшаем размер шрифта на маленьких экранах */
                 margin-bottom: 10px;
                 padding: 0 5px;
             }
@@ -366,13 +399,18 @@
                 font-size: 10px;
             }
 
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+
             label {
                 font-size: 10px;
             }
 
             .input-hint {
                 font-size: 8px;
-                line-height: 1.6;
+                line-height: 1.6; /* Увеличиваем междустрочный интервал для маленьких экранов */
             }
         }
     </style>
@@ -395,19 +433,13 @@
         <h2>PLAYLAND</h2>
         <p class="subtitle">Подай заявку и присоединяйся к приключению!</p>
 
-        <!-- Статус сообщение -->
-        <div id="status" class="status info">
-            📱 Инициализация WebApp...
-        </div>
-
         <form id="applicationForm">
             <div class="input-group">
                 <label for="nickname">📝 Никнейм:</label>
                 <input type="text" id="nickname" name="nickname" required
                        pattern="^[a-zA-Z0-9_]{3,16}$"
                        title="Только латинские буквы, цифры и символ _. Длина от 3 до 16 символов."
-                       placeholder="Введите игровой ник"
-                       maxlength="16">
+                       placeholder="Введите игровой ник">
                 <span class="input-hint">Только латинские буквы, цифры и символ _. От 3 до 16 символов.</span>
                 <div class="progress-bar">
                     <div class="progress-fill" id="nicknameProgress"></div>
@@ -419,8 +451,7 @@
                 <input type="text" id="discord" name="discord"
                        pattern="^.{0,32}$"
                        title="Максимум 32 символа."
-                       placeholder="Например: username#1234"
-                       maxlength="32">
+                       placeholder="Например: username#1234">
                 <span class="input-hint">Максимум 32 символа</span>
                 <div class="progress-bar">
                     <div class="progress-fill" id="discordProgress"></div>
@@ -430,46 +461,30 @@
             <div class="input-group">
                 <label for="reason">💬 Почему ты хочешь присоединиться? (необязательно):</label>
                 <textarea id="reason" name="reason" rows="4" maxlength="500"
-                         placeholder="Расскажи немного о себе, своем опыте в Minecraft, что тебя привлекает в нашем сервере..."></textarea>
+                         placeholder="Расскажи немного о себе..."></textarea>
                 <span class="input-hint"><span id="reasonCounter">0</span>/500 символов</span>
                 <div class="progress-bar">
                     <div class="progress-fill" id="reasonProgress"></div>
                 </div>
             </div>
-        </form>
 
-        <!-- Спиннер загрузки -->
-        <div class="loading-spinner" id="loadingSpinner">
-            <div class="block"></div>
-            <div class="block"></div>
-            <div class="block"></div>
-            <div class="block"></div>
-            <div class="loading-text">Отправка...</div>
-        </div>
+            <div class="btn-container">
+                <button type="submit">
+                    <i class="fas fa-sign-in-alt"></i>Отправить заявку
+                </button>
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="loading-text">Отправка...</div>
+                </div>
+            </div>
+        </form>
     </div>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        // Глобальные переменные
-        let isWebAppReady = false;
-        let formData = {};
-
-        // Функция логирования
-        function log(message) {
-            const timestamp = new Date().toLocaleTimeString();
-            console.log(`[WebApp ${timestamp}]`, message);
-        }
-
-        // Функция обновления статуса
-        function updateStatus(message, type = 'info') {
-            const status = document.getElementById('status');
-            if (status) {
-                status.textContent = message;
-                status.className = 'status ' + type;
-                status.style.display = 'block';
-            }
-            log(`Status [${type}]: ${message}`);
-        }
-
         // Создание пиксельных частиц
         const pixelContainer = document.getElementById('pixelContainer');
         const particleCount = 30;
@@ -496,75 +511,45 @@
             pixelContainer.appendChild(pixel);
         }
 
-        // Инициализация
-        log('🚀 Скрипт загружен');
-        log(`📱 User Agent: ${navigator.userAgent}`);
-        log(`🌐 URL: ${window.location.href}`);
+        // КРИТИЧНО: Проверка и инициализация Telegram WebApp
+        console.log('🚀 Инициализация WebApp...');
 
-        // Проверяем доступность Telegram WebApp
-        if (typeof Telegram === 'undefined') {
-            log('❌ Telegram объект недоступен');
-            updateStatus('❌ Откройте через Telegram бота', 'error');
+        if (!window.Telegram || !window.Telegram.WebApp) {
+            console.error("❌ Telegram WebApp API недоступен.");
         } else {
-            log('✅ Telegram объект доступен');
+            console.log("✅ Telegram WebApp API доступен.");
 
-            if (!Telegram.WebApp) {
-                log('❌ Telegram.WebApp недоступен');
-                updateStatus('❌ WebApp API недоступен', 'error');
-            } else {
-                log('✅ Telegram.WebApp доступен');
-                log(`📊 WebApp версия: ${Telegram.WebApp.version}`);
-                log(`📱 Платформа: ${Telegram.WebApp.platform}`);
+            // ОБЯЗАТЕЛЬНО: Инициализируем WebApp
+            try {
+                window.Telegram.WebApp.ready();
+                console.log("✅ WebApp.ready() вызван");
 
-                // Получаем данные пользователя
-                const user = Telegram.WebApp.initDataUnsafe?.user;
-                if (user) {
-                    log(`👤 Пользователь: ${user.first_name} (ID: ${user.id})`);
-                } else {
-                    log('⚠️ Данные пользователя недоступны');
-                }
+                // Настраиваем WebApp
+                window.Telegram.WebApp.expand();
+                console.log("✅ WebApp развернут");
 
-                // КРИТИЧНО: Инициализируем WebApp
-                try {
-                    Telegram.WebApp.ready();
-                    isWebAppReady = true;
-                    log('✅ Telegram.WebApp.ready() вызван успешно');
+                // Настраиваем MainButton
+                window.Telegram.WebApp.MainButton.text = "Отправить заявку";
+                window.Telegram.WebApp.MainButton.color = "#ffcc00";
+                window.Telegram.WebApp.MainButton.textColor = "#000000";
+                window.Telegram.WebApp.MainButton.show();
+                console.log("✅ MainButton настроен");
 
-                    // Настраиваем внешний вид
-                    Telegram.WebApp.expand();
-                    log('✅ WebApp развернут на полный экран');
+                // Обработчик MainButton
+                window.Telegram.WebApp.MainButton.onClick(function() {
+                    console.log("🔘 MainButton нажат");
+                    submitForm();
+                });
 
-                    // Настраиваем MainButton
-                    Telegram.WebApp.MainButton.text = "Отправить заявку";
-                    Telegram.WebApp.MainButton.color = "#ffcc00";
-                    Telegram.WebApp.MainButton.textColor = "#000000";
-                    Telegram.WebApp.MainButton.show();
-                    log('✅ MainButton настроен и показан');
+            } catch (error) {
+                console.error("❌ Ошибка инициализации WebApp:", error);
+            }
 
-                    // Обработчик MainButton
-                    Telegram.WebApp.MainButton.onClick(function() {
-                        log('🔘 MainButton нажат');
-                        submitApplication();
-                    });
-
-                    // Настраиваем цвета темы
-                    const themeParams = Telegram.WebApp.themeParams;
-                    if (themeParams) {
-                        document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#ffffff');
-                        document.documentElement.style.setProperty('--background-overlay', themeParams.bg_color || 'rgba(0, 0, 0, 0.7)');
-                    }
-
-                    updateStatus('✅ Готов к отправке', 'success');
-
-                    // Скрываем статус через 3 секунды
-                    setTimeout(() => {
-                        document.getElementById('status').style.display = 'none';
-                    }, 3000);
-
-                } catch (error) {
-                    log(`❌ Ошибка инициализации WebApp: ${error.message}`);
-                    updateStatus('❌ Ошибка инициализации', 'error');
-                }
+            // Установка цветов темы
+            const themeParams = window.Telegram.WebApp.themeParams;
+            if (themeParams) {
+                document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#ffffff');
+                document.documentElement.style.setProperty('--background-overlay', themeParams.bg_color || 'rgba(0, 0, 0, 0.7)');
             }
         }
 
@@ -582,38 +567,32 @@
         const reasonProgress = document.getElementById('reasonProgress');
 
         // Отслеживание ввода для никнейма
-        nickname.addEventListener('input', function() {
-            const value = this.value;
-            // Автоматически удаляем недопустимые символы
-            this.value = value.replace(/[^a-zA-Z0-9_]/g, '');
-
-            const cleanValue = this.value.trim();
-            const isValid = /^[a-zA-Z0-9_]{3,16}$/.test(cleanValue);
+        nickname.addEventListener('input', () => {
+            const value = nickname.value.trim();
+            const isValid = /^[a-zA-Z0-9_]{3,16}$/.test(value);
 
             // Обновление стилей на основе валидности
-            if (cleanValue.length >= 3 && isValid) {
-                this.style.borderColor = 'var(--secondary-color)';
-            } else if (cleanValue.length > 0) {
-                this.style.borderColor = '#ff3333';
+            if (isValid) {
+                nickname.style.borderColor = 'var(--secondary-color)';
             } else {
-                this.style.borderColor = 'var(--primary-color)';
+                nickname.style.borderColor = '#ff3333';
             }
 
             // Обновление прогресс-бара
-            const progress = Math.min(cleanValue.length / 16 * 100, 100);
+            const progress = Math.min(value.length / 16 * 100, 100);
             nicknameProgress.style.width = `${progress}%`;
         });
 
         // Отслеживание ввода для Discord
-        discord.addEventListener('input', function() {
-            const value = this.value.trim();
+        discord.addEventListener('input', () => {
+            const value = discord.value.trim();
             const progress = Math.min(value.length / 32 * 100, 100);
             discordProgress.style.width = `${progress}%`;
         });
 
         // Отслеживание ввода для причины
-        reason.addEventListener('input', function() {
-            const value = this.value.trim();
+        reason.addEventListener('input', () => {
+            const value = reason.value.trim();
             const length = value.length;
 
             // Обновление счетчика
@@ -624,143 +603,84 @@
             reasonProgress.style.width = `${progress}%`;
 
             // Изменение цвета счетчика при приближении к лимиту
+            if (length > 400) {
+                reasonCounter.style.color = '#ff9900';
+            }
             if (length > 450) {
                 reasonCounter.style.color = '#ff3333';
-            } else if (length > 400) {
-                reasonCounter.style.color = '#ff9900';
-            } else {
+            }
+            if (length <= 400) {
                 reasonCounter.style.color = '#aaa';
             }
         });
 
-        // Функция валидации данных
-        function validateForm() {
-            const nicknameValue = nickname.value.trim();
-            const discordValue = discord.value.trim();
-            const reasonValue = reason.value.trim();
-
-            log('🔍 Начинаем валидацию формы');
-
-            // Проверка никнейма
-            if (!nicknameValue) {
-                updateStatus('❌ Введите никнейм', 'error');
-                log('❌ Валидация: пустой никнейм');
-                return null;
-            }
-
-            if (nicknameValue.length < 3 || nicknameValue.length > 16) {
-                updateStatus('❌ Никнейм: от 3 до 16 символов', 'error');
-                log(`❌ Валидация: неправильная длина никнейма (${nicknameValue.length})`);
-                return null;
-            }
-
-            if (!/^[a-zA-Z0-9_]+$/.test(nicknameValue)) {
-                updateStatus('❌ Никнейм: только латинские буквы, цифры и _', 'error');
-                log('❌ Валидация: недопустимые символы в никнейме');
-                return null;
-            }
-
-            // Проверка Discord (если указан)
-            if (discordValue && discordValue.length > 32) {
-                updateStatus('❌ Discord: максимум 32 символа', 'error');
-                log(`❌ Валидация: Discord слишком длинный (${discordValue.length})`);
-                return null;
-            }
-
-            // Проверка причины (если указана)
-            if (reasonValue && reasonValue.length > 500) {
-                updateStatus('❌ Причина: максимум 500 символов', 'error');
-                log(`❌ Валидация: причина слишком длинная (${reasonValue.length})`);
-                return null;
-            }
-
-            const data = {
-                nickname: nicknameValue,
-                discord: discordValue || '',
-                reason: reasonValue || ''
-            };
-
-            log('✅ Валидация пройдена успешно');
-            return data;
-        }
-
-        // Функция отправки заявки
-        function submitApplication() {
-            log('📤 Начинаем отправку заявки');
-
-            if (!isWebAppReady) {
-                log('❌ WebApp не готов к отправке');
-                updateStatus('❌ WebApp не инициализирован', 'error');
-                return;
-            }
-
-            // Валидируем данные
-            const data = validateForm();
-            if (!data) {
-                log('❌ Валидация не пройдена, отправка отменена');
-                return;
-            }
+        // Функция отправки формы
+        function submitForm() {
+            console.log('📤 Отправка формы...');
 
             // Показываем спиннер загрузки
             loadingSpinner.style.display = 'block';
-            updateStatus('📤 Отправляем заявку...', 'info');
 
             try {
-                // Очистка данных
-                const sanitizedData = {
-                    nickname: DOMPurify.sanitize(data.nickname),
-                    discord: DOMPurify.sanitize(data.discord),
-                    reason: DOMPurify.sanitize(data.reason)
-                };
-
-                // Сериализуем данные в JSON
-                const jsonData = JSON.stringify(sanitizedData);
-                log(`📦 Данные для отправки: ${jsonData}`);
-                log(`📏 Размер данных: ${jsonData.length} символов`);
-
-                // Отправляем через Telegram WebApp API
-                if (Telegram.WebApp && Telegram.WebApp.sendData) {
-                    // Добавляем небольшую задержку для лучшего UX
-                    setTimeout(() => {
-                        Telegram.WebApp.sendData(jsonData);
-                        log('✅ Данные отправлены через Telegram.WebApp.sendData()');
-                        updateStatus('✅ Заявка отправлена!', 'success');
-
-                        // Скрываем MainButton после отправки
-                        Telegram.WebApp.MainButton.hide();
-                        log('✅ MainButton скрыт после отправки');
-
-                        // Скрываем спиннер
-                        loadingSpinner.style.display = 'none';
-
-                        // Закрываем WebApp через некоторое время
-                        setTimeout(() => {
-                            Telegram.WebApp.close();
-                        }, 1500);
-
-                    }, 1000);
-
-                } else {
-                    throw new Error('Telegram.WebApp.sendData недоступен');
+                // Проверка доступности Telegram WebApp API
+                if (!window.Telegram || !window.Telegram.WebApp) {
+                    throw new Error("Telegram WebApp API недоступен.");
                 }
 
+                // Получаем данные из формы
+                const nicknameValue = nickname.value.trim();
+                const discordValue = discord.value.trim();
+                const reasonValue = reason.value.trim();
+
+                // Валидация данных
+                if (!nicknameValue.match(/^[a-zA-Z0-9_]{3,16}$/)) {
+                    throw new Error("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
+                }
+
+                // Очистка данных
+                const sanitizedNickname = DOMPurify.sanitize(nicknameValue);
+                const sanitizedDiscord = DOMPurify.sanitize(discordValue);
+                const sanitizedReason = DOMPurify.sanitize(reasonValue);
+
+                // Формируем данные для отправки
+                const data = {
+                    nickname: sanitizedNickname,
+                    discord: sanitizedDiscord,
+                    reason: sanitizedReason
+                };
+
+                console.log("📦 Данные для отправки:", data);
+
+                // Добавляем эффект задержки для лучшего UX
+                setTimeout(() => {
+                    // КРИТИЧНО: Отправляем данные в Telegram WebApp
+                    window.Telegram.WebApp.sendData(JSON.stringify(data));
+                    console.log("✅ Данные отправлены через Telegram WebApp");
+
+                    // Скрываем MainButton
+                    window.Telegram.WebApp.MainButton.hide();
+
+                    // Закрываем Web App
+                    setTimeout(() => {
+                        window.Telegram.WebApp.close();
+                    }, 500);
+                }, 1000);
+
             } catch (error) {
-                log(`❌ Ошибка при отправке: ${error.message}`);
-                updateStatus(`❌ Ошибка: ${error.message}`, 'error');
+                console.error("❌ Ошибка:", error.message);
+                alert(`Ошибка: ${error.message}`);
                 loadingSpinner.style.display = 'none';
             }
         }
 
-        // Fallback: обработчик обычной формы
-        form.addEventListener('submit', function(e) {
+        // Обработка отправки формы (fallback)
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            log('📝 Форма отправлена через submit event (fallback)');
-            submitApplication();
+            console.log('📝 Форма отправлена через submit');
+            submitForm();
         });
 
-        // Логируем готовность скрипта
-        log('✅ Все обработчики установлены');
-        log('🎯 Скрипт полностью инициализирован');
+        console.log('✅ Скрипт полностью загружен');
     </script>
 </body>
 </html>
