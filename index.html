@@ -3,311 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ДИАГНОСТИКА WebApp | PLAYLAND</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Подать заявку | PLAYLAND</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #1a1a1a;
-            color: white;
+        /* Переменные для единого стиля */
+        :root {
+            --primary-color: #ffcc00;
+            --secondary-color: #00ff00;
+            --accent-color: #ff9900;
+            --text-color: #ffffff;
+            --border-color: #000000;
+            --background-overlay: rgba(0, 0, 0, 0.7);
+            --glow-color: rgba(255, 204, 0, 0.7);
+            --pixel-shadow: 4px 4px 0px #000;
+        }
+
+        /* Сброс стилей и общие настройки */
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
         }
-        .container {
+
+        /* Общий стиль страницы */
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Press Start 2P', cursive;
+            background: url('images/grass_background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        /* Пиксельные частицы */
+        .pixel-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .pixel {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 5px var(--glow-color);
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Форма */
+        .form-container {
+            background: var(--background-overlay);
+            padding: 30px;
+            border: 4px solid var(--border-color);
+            box-shadow: var(--pixel-shadow);
+            border-radius: 10px;
+            width: 100%;
             max-width: 500px;
-            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 1s ease-in-out;
+            z-index: 2;
+            backdrop-filter: blur(5px);
         }
-        .section {
-            background: #2a2a2a;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #444;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .status {
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
+
+        /* Логотип и заголовок */
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        h2 {
+            font-size: 28px;
+            color: var(--primary-color);
+            text-shadow: 3px 3px 0px var(--border-color);
+            margin-bottom: 15px;
+            animation: glow 2s infinite alternate;
+            letter-spacing: 2px;
+            word-break: break-word; /* Предотвращает выход текста за пределы контейнера */
+            overflow-wrap: break-word;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 2px 2px 0px var(--border-color);
+            }
+            to {
+                text-shadow: 4px 4px 10px var(--glow-color);
+            }
+        }
+
+        .subtitle {
+            font-size: 14px;
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+            position: relative;
+            display: inline-block;
+        }
+
+        .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--secondary-color);
+            animation: expandLine 2s ease-in-out infinite;
+        }
+
+        @keyframes expandLine {
+            0% { width: 0; left: 50%; }
+            50% { width: 100%; left: 0; }
+            100% { width: 0; left: 50%; }
+        }
+
+        /* Группы полей ввода */
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .input-group:nth-child(1) { animation-delay: 0.1s; }
+        .input-group:nth-child(2) { animation-delay: 0.2s; }
+        .input-group:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Поле ввода */
+        label {
             font-weight: bold;
+            color: var(--text-color);
+            text-align: left;
+            display: block;
+            margin-bottom: 8px;
+            animation: slideIn 0.5s ease-in-out forwards;
+            font-size: 12px;
         }
-        .success { background: #28a745; color: white; }
-        .error { background: #dc3545; color: white; }
-        .info { background: #17a2b8; color: white; }
-        .warning { background: #ffc107; color: black; }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         input, textarea {
             width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #555;
-            border-radius: 4px;
-            background: #333;
+            padding: 12px;
+            margin-bottom: 5px;
+            border: 3px solid var(--primary-color);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.6);
             color: white;
-            box-sizing: border-box;
-        }
-        button {
-            background: #007bff;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px 5px;
-            width: 100%;
-        }
-        button:hover { background: #0056b3; }
-        .log {
-            background: #000;
-            color: #0f0;
-            padding: 10px;
-            font-family: monospace;
+            font-family: 'Press Start 2P', cursive;
             font-size: 12px;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #333;
-            margin: 10px 0;
-            white-space: pre-wrap;
+            transition: all 0.3s ease-in-out;
+            animation: fadeIn 1s ease-in-out;
         }
-        h1, h2, h3 { color: #ffcc00; }
-        .test-data {
-            background: #333;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
+
+        input:focus, textarea:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            outline: none;
+            transform: scale(1.02);
+        }
+
+        .input-hint {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 5px;
+            display: block;
+            line-height: 1.5; /* Увеличиваем междустрочный интервал для подсказок */
+        }
+
+        /* Кнопка */
+        .btn-container {
+            position: relative;
+            margin-top: 30px;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: #000;
+            font-weight: bold;
+            border: 3px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 1px 1px 0 #fff;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s ease-in-out;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--glow-color);
+        }
+
+        button:active {
+            transform: scale(0.98);
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        button i {
+            margin-right: 8px;
+        }
+
+        /* Спиннер загрузки */
+        .loading-spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+        }
+
+        .block {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            animation: pixelSpin 1.5s infinite linear;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .block:nth-child(1) { transform: rotate(0deg) translate(30px); animation-delay: 0s; }
+        .block:nth-child(2) { transform: rotate(90deg) translate(30px); animation-delay: 0.2s; }
+        .block:nth-child(3) { transform: rotate(180deg) translate(30px); animation-delay: 0.4s; }
+        .block:nth-child(4) { transform: rotate(270deg) translate(30px); animation-delay: 0.6s; }
+
+        @keyframes pixelSpin {
+            0% { transform: rotate(0deg) translate(30px); }
+            100% { transform: rotate(360deg) translate(30px); }
+        }
+
+        /* Текст спиннера */
+        .loading-text {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 2px 2px 0px #000;
+            background: var(--background-overlay);
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 2px solid var(--primary-color);
+        }
+
+        /* Пиксельные декоративные элементы */
+        .pixel-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            z-index: 3;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .pixel-decoration:nth-child(1) {
+            top: -10px;
+            left: -10px;
+            background: var(--primary-color);
+        }
+
+        .pixel-decoration:nth-child(2) {
+            top: -10px;
+            right: -10px;
+            background: var(--secondary-color);
+            animation-delay: 0.5s;
+        }
+
+        .pixel-decoration:nth-child(3) {
+            bottom: -10px;
+            left: -10px;
+            background: var(--accent-color);
+            animation-delay: 1s;
+        }
+
+        .pixel-decoration:nth-child(4) {
+            bottom: -10px;
+            right: -10px;
+            background: var(--primary-color);
+            animation-delay: 1.5s;
+        }
+
+        /* Прогресс полей */
+        .progress-bar {
+            height: 6px;
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+
+        /* Адаптивная верстка */
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 20px;
+                border-width: 3px;
+            }
+
+            h2 {
+                font-size: 20px; /* Уменьшаем размер шрифта на маленьких экранах */
+                margin-bottom: 10px;
+                padding: 0 5px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            input, textarea {
+                padding: 10px;
+                font-size: 10px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            label {
+                font-size: 10px;
+            }
+
+            .input-hint {
+                font-size: 8px;
+                line-height: 1.6; /* Увеличиваем междустрочный интервал для маленьких экранов */
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔍 ДИАГНОСТИКА WEBAPP PLAYLAND</h1>
-        
-        <div class="section">
-            <h3>📊 Статус WebApp</h3>
-            <div id="webappStatus" class="status info">Проверяем...</div>
+    <div class="pixel-container" id="pixelContainer"></div>
+
+    <div class="form-container">
+        <!-- Декоративные элементы -->
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+
+        <!-- Иконка сервера -->
+        <div class="logo">
+            <img src="images/playland_logo.png" alt="PLAYLAND" width="80" height="80">
         </div>
-        
-        <div class="section">
-            <h3>📝 Тестовая форма</h3>
-            <form id="testForm">
-                <label>Никнейм:</label>
-                <input type="text" id="nickname" value="TestUser123">
-                
-                <label>Discord:</label>
-                <input type="text" id="discord" value="testuser#1234">
-                
-                <label>Причина:</label>
-                <textarea id="reason">Тестовая заявка для диагностики WebApp</textarea>
-                
-                <button type="button" onclick="testSendData()">🚀 Отправить через sendData</button>
-                <button type="button" onclick="testMainButton()">🔘 Тест MainButton</button>
-                <button type="button" onclick="showDebugInfo()">🔍 Показать debug info</button>
-            </form>
-        </div>
-        
-        <div class="section">
-            <h3>📋 Лог диагностики</h3>
-            <div id="log" class="log"></div>
-            <button type="button" onclick="clearLog()">🗑️ Очистить лог</button>
-        </div>
-        
-        <div class="section">
-            <h3>📊 Тестовые данные</h3>
-            <div id="testData" class="test-data"></div>
-        </div>
+
+        <h2>PLAYLAND</h2>
+        <p class="subtitle">Подай заявку и присоединяйся к приключению!</p>
+
+        <form id="applicationForm">
+            <div class="input-group">
+                <label for="nickname">📝 Никнейм:</label>
+                <input type="text" id="nickname" name="nickname" required
+                       pattern="^[a-zA-Z0-9_]{3,16}$"
+                       title="Только латинские буквы, цифры и символ _. Длина от 3 до 16 символов."
+                       placeholder="Введите игровой ник">
+                <span class="input-hint">Только латинские буквы, цифры и символ _. От 3 до 16 символов.</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="nicknameProgress"></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="discord">🎮 Discord-аккаунт (необязательно):</label>
+                <input type="text" id="discord" name="discord"
+                       pattern="^.{0,32}$"
+                       title="Максимум 32 символа."
+                       placeholder="Например: username#1234">
+                <span class="input-hint">Максимум 32 символа</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="discordProgress"></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="reason">💬 Почему ты хочешь присоединиться? (необязательно):</label>
+                <textarea id="reason" name="reason" rows="4" maxlength="500"
+                         placeholder="Расскажи немного о себе..."></textarea>
+                <span class="input-hint"><span id="reasonCounter">0</span>/500 символов</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="reasonProgress"></div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit">
+                    <i class="fas fa-sign-in-alt"></i>Отправить заявку
+                </button>
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="block"></div>
+                    <div class="loading-text">Отправка...</div>
+                </div>
+            </div>
+        </form>
     </div>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        // Глобальные переменные
-        let logCount = 0;
-        
-        // Функция логирования
-        function log(message, type = 'info') {
-            logCount++;
-            const timestamp = new Date().toLocaleTimeString();
-            const logDiv = document.getElementById('log');
-            const color = type === 'error' ? '#ff4444' : type === 'success' ? '#44ff44' : '#44ffff';
-            logDiv.innerHTML += `[${logCount}] [${timestamp}] ${message}\n`;
-            logDiv.scrollTop = logDiv.scrollHeight;
-            console.log(`[WebApp ${timestamp}] ${message}`);
+        // Создание пиксельных частиц
+        const pixelContainer = document.getElementById('pixelContainer');
+        const particleCount = 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const pixel = document.createElement('div');
+            pixel.classList.add('pixel');
+
+            // Случайные параметры для частиц
+            const size = Math.random() * 10 + 5;
+            const duration = Math.random() * 10 + 10;
+            const x = Math.random() * 100;
+
+            pixel.style.width = `${size}px`;
+            pixel.style.height = `${size}px`;
+            pixel.style.left = `${x}%`;
+            pixel.style.animationDuration = `${duration}s`;
+            pixel.style.opacity = Math.random() * 0.5 + 0.3;
+
+            // Случайный цвет между золотым, зеленым и белым
+            const colors = ['rgba(255, 204, 0, 0.7)', 'rgba(0, 255, 0, 0.5)', 'rgba(255, 255, 255, 0.3)'];
+            pixel.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+            pixelContainer.appendChild(pixel);
         }
-        
-        function clearLog() {
-            document.getElementById('log').innerHTML = '';
-            logCount = 0;
-        }
-        
-        function updateStatus(message, type) {
-            const status = document.getElementById('webappStatus');
-            status.textContent = message;
-            status.className = 'status ' + type;
-        }
-        
-        function showTestData() {
-            const data = {
-                nickname: document.getElementById('nickname').value,
-                discord: document.getElementById('discord').value,
-                reason: document.getElementById('reason').value,
-                timestamp: new Date().toISOString(),
-                debug: true
-            };
-            
-            document.getElementById('testData').innerHTML = 
-                `<strong>JSON данные:</strong><br>${JSON.stringify(data, null, 2)}`;
-            
-            return data;
-        }
-        
-        // Инициализация
-        log('🚀 Скрипт диагностики загружен');
-        log(`📱 User Agent: ${navigator.userAgent}`);
-        log(`🌐 URL: ${window.location.href}`);
-        log(`📊 Размер экрана: ${window.innerWidth}x${window.innerHeight}`);
-        
-        // Проверка Telegram WebApp
-        if (typeof Telegram === 'undefined') {
-            log('❌ Telegram объект недоступен', 'error');
-            updateStatus('❌ Telegram объект недоступен', 'error');
+
+        // КРИТИЧНО: Проверка и инициализация Telegram WebApp
+        console.log('🚀 Инициализация WebApp...');
+
+        if (!window.Telegram || !window.Telegram.WebApp) {
+            console.error("❌ Telegram WebApp API недоступен.");
         } else {
-            log('✅ Telegram объект доступен', 'success');
-            
-            if (!Telegram.WebApp) {
-                log('❌ Telegram.WebApp недоступен', 'error');
-                updateStatus('❌ WebApp API недоступен', 'error');
-            } else {
-                log('✅ Telegram.WebApp доступен', 'success');
-                log(`📊 WebApp версия: ${Telegram.WebApp.version}`);
-                log(`📱 Платформа: ${Telegram.WebApp.platform}`);
-                log(`🎨 Цветовая схема: ${Telegram.WebApp.colorScheme}`);
-                log(`📏 Высота viewport: ${Telegram.WebApp.viewportHeight}`);
-                log(`🔒 Высота viewport стабильная: ${Telegram.WebApp.viewportStableHeight}`);
-                
-                // Получаем данные пользователя
-                const user = Telegram.WebApp.initDataUnsafe?.user;
-                if (user) {
-                    log(`👤 Пользователь: ${user.first_name} (ID: ${user.id})`, 'success');
-                    log(`🔑 Username: ${user.username || 'не указан'}`);
-                    log(`🌐 Язык: ${user.language_code || 'не указан'}`);
-                } else {
-                    log('⚠️ Данные пользователя недоступны', 'warning');
-                }
-                
-                // Проверяем initData
-                if (Telegram.WebApp.initData) {
-                    log(`🔐 initData доступен (длина: ${Telegram.WebApp.initData.length})`, 'success');
-                } else {
-                    log('⚠️ initData недоступен', 'warning');
-                }
-                
-                // КРИТИЧНО: Инициализируем WebApp
-                try {
-                    Telegram.WebApp.ready();
-                    log('✅ Telegram.WebApp.ready() вызван', 'success');
-                    
-                    // Настраиваем внешний вид
-                    Telegram.WebApp.expand();
-                    log('✅ WebApp развернут', 'success');
-                    
-                    // Настраиваем MainButton
-                    Telegram.WebApp.MainButton.text = "ДИАГНОСТИКА: Отправить";
-                    Telegram.WebApp.MainButton.color = "#ff6600";
-                    Telegram.WebApp.MainButton.textColor = "#ffffff";
-                    Telegram.WebApp.MainButton.show();
-                    log('✅ MainButton настроен и показан', 'success');
-                    
-                    // Обработчик MainButton
-                    Telegram.WebApp.MainButton.onClick(function() {
-                        log('🔘 MainButton нажат!', 'success');
-                        testSendData();
-                    });
-                    
-                    updateStatus('✅ WebApp готов к диагностике', 'success');
-                    
-                } catch (error) {
-                    log(`❌ Ошибка инициализации: ${error.message}`, 'error');
-                    updateStatus('❌ Ошибка инициализации', 'error');
-                }
-            }
-        }
-        
-        // Показываем тестовые данные
-        showTestData();
-        
-        // Функции тестирования
-        function testSendData() {
-            log('📤 === НАЧИНАЕМ ТЕСТ ОТПРАВКИ ДАННЫХ ===', 'info');
-            
+            console.log("✅ Telegram WebApp API доступен.");
+
+            // ОБЯЗАТЕЛЬНО: Инициализируем WebApp
             try {
-                const data = showTestData();
-                
-                log(`📦 Подготовленные данные: ${JSON.stringify(data)}`, 'info');
-                log(`📏 Размер JSON: ${JSON.stringify(data).length} символов`, 'info');
-                
-                if (!window.Telegram || !window.Telegram.WebApp) {
-                    throw new Error('Telegram WebApp недоступен');
-                }
-                
-                if (!window.Telegram.WebApp.sendData) {
-                    throw new Error('Telegram.WebApp.sendData недоступен');
-                }
-                
-                // Отправляем данные
-                const jsonData = JSON.stringify(data);
-                log(`🚀 Вызываем Telegram.WebApp.sendData()...`, 'info');
-                
-                window.Telegram.WebApp.sendData(jsonData);
-                log('✅ sendData() вызван успешно!', 'success');
-                log('📨 Данные отправлены в бота', 'success');
-                
-                // Скрываем MainButton
-                window.Telegram.WebApp.MainButton.hide();
-                log('✅ MainButton скрыт', 'success');
-                
-                // Закрываем через 3 секунды
-                setTimeout(() => {
-                    log('🚪 Закрываем WebApp через 3 секунды...', 'info');
-                    window.Telegram.WebApp.close();
-                }, 3000);
-                
-            } catch (error) {
-                log(`❌ Ошибка отправки: ${error.message}`, 'error');
-                log(`❌ Stack trace: ${error.stack}`, 'error');
-            }
-        }
-        
-        function testMainButton() {
-            log('🔘 Тестируем MainButton...', 'info');
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.MainButton) {
+                window.Telegram.WebApp.ready();
+                console.log("✅ WebApp.ready() вызван");
+
+                // Настраиваем WebApp
+                window.Telegram.WebApp.expand();
+                console.log("✅ WebApp развернут");
+
+                // Настраиваем MainButton
+                window.Telegram.WebApp.MainButton.text = "Отправить заявку";
+                window.Telegram.WebApp.MainButton.color = "#ffcc00";
+                window.Telegram.WebApp.MainButton.textColor = "#000000";
                 window.Telegram.WebApp.MainButton.show();
-                log('✅ MainButton показан', 'success');
-            } else {
-                log('❌ MainButton недоступен', 'error');
+                console.log("✅ MainButton настроен");
+
+                // Обработчик MainButton
+                window.Telegram.WebApp.MainButton.onClick(function() {
+                    console.log("🔘 MainButton нажат");
+                    submitForm();
+                });
+
+            } catch (error) {
+                console.error("❌ Ошибка инициализации WebApp:", error);
+            }
+
+            // Установка цветов темы
+            const themeParams = window.Telegram.WebApp.themeParams;
+            if (themeParams) {
+                document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#ffffff');
+                document.documentElement.style.setProperty('--background-overlay', themeParams.bg_color || 'rgba(0, 0, 0, 0.7)');
             }
         }
-        
-        function showDebugInfo() {
-            log('🔍 === DEBUG ИНФОРМАЦИЯ ===', 'info');
-            
-            if (window.Telegram && window.Telegram.WebApp) {
-                const wa = window.Telegram.WebApp;
-                log(`📊 isExpanded: ${wa.isExpanded}`, 'info');
-                log(`📊 viewportHeight: ${wa.viewportHeight}`, 'info');
-                log(`📊 viewportStableHeight: ${wa.viewportStableHeight}`, 'info');
-                log(`📊 headerColor: ${wa.headerColor}`, 'info');
-                log(`📊 backgroundColor: ${wa.backgroundColor}`, 'info');
-                log(`📊 isClosingConfirmationEnabled: ${wa.isClosingConfirmationEnabled}`, 'info');
-                
-                if (wa.MainButton) {
-                    log(`🔘 MainButton.isVisible: ${wa.MainButton.isVisible}`, 'info');
-                    log(`🔘 MainButton.isActive: ${wa.MainButton.isActive}`, 'info');
-                    log(`🔘 MainButton.text: ${wa.MainButton.text}`, 'info');
+
+        // Получение элементов формы
+        const form = document.getElementById('applicationForm');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const nickname = document.getElementById('nickname');
+        const discord = document.getElementById('discord');
+        const reason = document.getElementById('reason');
+        const reasonCounter = document.getElementById('reasonCounter');
+
+        // Прогресс бары
+        const nicknameProgress = document.getElementById('nicknameProgress');
+        const discordProgress = document.getElementById('discordProgress');
+        const reasonProgress = document.getElementById('reasonProgress');
+
+        // Отслеживание ввода для никнейма
+        nickname.addEventListener('input', () => {
+            const value = nickname.value.trim();
+            const isValid = /^[a-zA-Z0-9_]{3,16}$/.test(value);
+
+            // Обновление стилей на основе валидности
+            if (isValid) {
+                nickname.style.borderColor = 'var(--secondary-color)';
+            } else {
+                nickname.style.borderColor = '#ff3333';
+            }
+
+            // Обновление прогресс-бара
+            const progress = Math.min(value.length / 16 * 100, 100);
+            nicknameProgress.style.width = `${progress}%`;
+        });
+
+        // Отслеживание ввода для Discord
+        discord.addEventListener('input', () => {
+            const value = discord.value.trim();
+            const progress = Math.min(value.length / 32 * 100, 100);
+            discordProgress.style.width = `${progress}%`;
+        });
+
+        // Отслеживание ввода для причины
+        reason.addEventListener('input', () => {
+            const value = reason.value.trim();
+            const length = value.length;
+
+            // Обновление счетчика
+            reasonCounter.textContent = length;
+
+            // Обновление прогресс-бара
+            const progress = Math.min(length / 500 * 100, 100);
+            reasonProgress.style.width = `${progress}%`;
+
+            // Изменение цвета счетчика при приближении к лимиту
+            if (length > 400) {
+                reasonCounter.style.color = '#ff9900';
+            }
+            if (length > 450) {
+                reasonCounter.style.color = '#ff3333';
+            }
+            if (length <= 400) {
+                reasonCounter.style.color = '#aaa';
+            }
+        });
+
+        // Функция отправки формы
+        function submitForm() {
+            console.log('📤 Отправка формы...');
+
+            // Показываем спиннер загрузки
+            loadingSpinner.style.display = 'block';
+
+            try {
+                // Проверка доступности Telegram WebApp API
+                if (!window.Telegram || !window.Telegram.WebApp) {
+                    throw new Error("Telegram WebApp API недоступен.");
                 }
-            } else {
-                log('❌ WebApp недоступен для debug', 'error');
+
+                // Получаем данные из формы
+                const nicknameValue = nickname.value.trim();
+                const discordValue = discord.value.trim();
+                const reasonValue = reason.value.trim();
+
+                // Валидация данных
+                if (!nicknameValue.match(/^[a-zA-Z0-9_]{3,16}$/)) {
+                    throw new Error("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
+                }
+
+                // Очистка данных
+                const sanitizedNickname = DOMPurify.sanitize(nicknameValue);
+                const sanitizedDiscord = DOMPurify.sanitize(discordValue);
+                const sanitizedReason = DOMPurify.sanitize(reasonValue);
+
+                // Формируем данные для отправки
+                const data = {
+                    nickname: sanitizedNickname,
+                    discord: sanitizedDiscord,
+                    reason: sanitizedReason
+                };
+
+                console.log("📦 Данные для отправки:", data);
+
+                // Добавляем эффект задержки для лучшего UX
+                setTimeout(() => {
+                    // КРИТИЧНО: Отправляем данные в Telegram WebApp
+                    window.Telegram.WebApp.sendData(JSON.stringify(data));
+                    console.log("✅ Данные отправлены через Telegram WebApp");
+
+                    // Скрываем MainButton
+                    window.Telegram.WebApp.MainButton.hide();
+
+                    // Закрываем Web App
+                    setTimeout(() => {
+                        window.Telegram.WebApp.close();
+                    }, 500);
+                }, 1000);
+
+            } catch (error) {
+                console.error("❌ Ошибка:", error.message);
+                alert(`Ошибка: ${error.message}`);
+                loadingSpinner.style.display = 'none';
             }
         }
-        
-        log('✅ Все функции диагностики инициализированы', 'success');
-        log('📋 Готов к тестированию WebApp интеграции', 'info');
+
+        // Обработка отправки формы (fallback)
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('📝 Форма отправлена через submit');
+            submitForm();
+        });
+
+        console.log('✅ Скрипт полностью загружен');
     </script>
 </body>
 </html>
