@@ -391,10 +391,10 @@
             <div class="input-group">
                 <label for="age">🎂 Возраст:</label>
                 <input type="number" id="age" name="age" required
-                       min="10" max="99"
-                       title="Укажите ваш возраст (от 10 до 99 лет)"
+                       min="1" max="120"
+                       title="Укажите ваш возраст"
                        placeholder="Введите ваш возраст">
-                <span class="input-hint">От 10 до 99 лет</span>
+                <span class="input-hint">Любой возраст</span>
                 <div class="progress-bar">
                     <div class="progress-fill" id="ageProgress"></div>
                 </div>
@@ -514,7 +514,7 @@
         // Отслеживание ввода для возраста
         age.addEventListener('input', () => {
             const value = parseInt(age.value);
-            const isValid = value >= 10 && value <= 99;
+            const isValid = value >= 1 && value <= 120;
 
             // Обновление стилей на основе валидности
             if (age.value.length > 0) {
@@ -528,7 +528,7 @@
             }
 
             // Обновление прогресс-бара
-            const progress = isValid ? 100 : Math.min((value || 0) / 99 * 100, 100);
+            const progress = isValid ? 100 : Math.min((value || 0) / 120 * 100, 100);
             ageProgress.style.width = `${progress}%`;
         });
 
@@ -666,8 +666,8 @@
                     throw new Error("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
                 }
 
-                if (!ageValue || ageValue < 10 || ageValue > 99) {
-                    throw new Error("Возраст должен быть от 10 до 99 лет");
+                if (!ageValue || ageValue < 1 || ageValue > 120) {
+                    throw new Error("Возраст должен быть от 1 до 120 лет");
                 }
 
                 // Формируем данные для отправки
