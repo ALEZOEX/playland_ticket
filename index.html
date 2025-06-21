@@ -545,6 +545,9 @@
         // Функция отправки через API (fallback)
         async function sendDataViaAPI(data) {
             const endpoints = [
+                'https://playland.ru/api/applications',
+                'http://playland.ru/api/applications',
+                'https://your-playland-server.com/api/applications',
                 'http://127.0.0.1:5000/api/applications',
                 'http://localhost:5000/api/applications',
                 '/api/applications'
