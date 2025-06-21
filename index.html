@@ -6,7 +6,6 @@
     <title>Подать заявку | PLAYLAND</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <style>
         /* Переменные для единого стиля */
         :root {
@@ -32,7 +31,7 @@
             margin: 0;
             overflow-x: hidden;
             font-family: 'Press Start 2P', cursive;
-            background: url('images/grass_background.jpg') no-repeat center center fixed;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             background-size: cover;
             display: flex;
             justify-content: center;
@@ -123,7 +122,7 @@
             margin-bottom: 15px;
             animation: glow 2s infinite alternate;
             letter-spacing: 2px;
-            word-break: break-word; /* Предотвращает выход текста за пределы контейнера */
+            word-break: break-word;
             overflow-wrap: break-word;
         }
 
@@ -214,7 +213,7 @@
             color: #aaa;
             margin-top: 5px;
             display: block;
-            line-height: 1.5; /* Увеличиваем междустрочный интервал для подсказок */
+            line-height: 1.5;
         }
 
         /* Кнопка */
@@ -323,43 +322,6 @@
             border: 2px solid var(--primary-color);
         }
 
-        /* Пиксельные декоративные элементы */
-        .pixel-decoration {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--primary-color);
-            z-index: 3;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .pixel-decoration:nth-child(1) {
-            top: -10px;
-            left: -10px;
-            background: var(--primary-color);
-        }
-
-        .pixel-decoration:nth-child(2) {
-            top: -10px;
-            right: -10px;
-            background: var(--secondary-color);
-            animation-delay: 0.5s;
-        }
-
-        .pixel-decoration:nth-child(3) {
-            bottom: -10px;
-            left: -10px;
-            background: var(--accent-color);
-            animation-delay: 1s;
-        }
-
-        .pixel-decoration:nth-child(4) {
-            bottom: -10px;
-            right: -10px;
-            background: var(--primary-color);
-            animation-delay: 1.5s;
-        }
-
         /* Прогресс полей */
         .progress-bar {
             height: 6px;
@@ -385,7 +347,7 @@
             }
 
             h2 {
-                font-size: 20px; /* Уменьшаем размер шрифта на маленьких экранах */
+                font-size: 20px;
                 margin-bottom: 10px;
                 padding: 0 5px;
             }
@@ -410,7 +372,7 @@
 
             .input-hint {
                 font-size: 8px;
-                line-height: 1.6; /* Увеличиваем междустрочный интервал для маленьких экранов */
+                line-height: 1.6;
             }
         }
     </style>
@@ -419,15 +381,9 @@
     <div class="pixel-container" id="pixelContainer"></div>
 
     <div class="form-container">
-        <!-- Декоративные элементы -->
-        <div class="pixel-decoration"></div>
-        <div class="pixel-decoration"></div>
-        <div class="pixel-decoration"></div>
-        <div class="pixel-decoration"></div>
-
         <!-- Иконка сервера -->
         <div class="logo">
-            <img src="images/playland_logo.png" alt="PLAYLAND" width="80" height="80">
+            <div style="width: 80px; height: 80px; background: var(--primary-color); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #000; font-weight: bold;">PL</div>
         </div>
 
         <h2>PLAYLAND</h2>
@@ -447,14 +403,14 @@
             </div>
 
             <div class="input-group">
-                <label for="discord">🎮 Discord-аккаунт (необязательно):</label>
-                <input type="text" id="discord" name="discord"
-                       pattern="^.{0,32}$"
-                       title="Максимум 32 символа."
-                       placeholder="Например: username#1234">
-                <span class="input-hint">Максимум 32 символа</span>
+                <label for="age">🎂 Возраст:</label>
+                <input type="number" id="age" name="age" required
+                       min="10" max="99"
+                       title="Укажите ваш возраст (от 10 до 99 лет)"
+                       placeholder="Введите ваш возраст">
+                <span class="input-hint">От 10 до 99 лет</span>
                 <div class="progress-bar">
-                    <div class="progress-fill" id="discordProgress"></div>
+                    <div class="progress-fill" id="ageProgress"></div>
                 </div>
             </div>
 
@@ -532,76 +488,19 @@
             setTimeout(() => debugDiv.remove(), 5000);
         }
 
-        if (!window.Telegram || !window.Telegram.WebApp) {
-            console.error("❌ Telegram WebApp API недоступен.");
-            addDebugInfo("❌ Telegram WebApp API недоступен", 'error');
-        } else {
-            console.log("✅ Telegram WebApp API доступен.");
-            addDebugInfo("✅ Telegram WebApp API доступен", 'success');
-
-            // Логируем информацию о WebApp
-            console.log("📊 WebApp версия:", window.Telegram.WebApp.version);
-            console.log("📱 Платформа:", window.Telegram.WebApp.platform);
-            console.log("🎨 Цветовая схема:", window.Telegram.WebApp.colorScheme);
-
-            // Проверяем initData
-            if (window.Telegram.WebApp.initData) {
-                console.log("🔐 initData доступен:", window.Telegram.WebApp.initData.length, "символов");
-                addDebugInfo("✅ initData доступен", 'success');
-            } else {
-                console.log("⚠️ initData недоступен");
-                addDebugInfo("⚠️ initData недоступен", 'error');
-            }
-
-            // ОБЯЗАТЕЛЬНО: Инициализируем WebApp
-            try {
-                window.Telegram.WebApp.ready();
-                console.log("✅ WebApp.ready() вызван");
-                addDebugInfo("✅ WebApp.ready() вызван", 'success');
-
-                // Настраиваем WebApp
-                window.Telegram.WebApp.expand();
-                console.log("✅ WebApp развернут");
-
-                // Настраиваем MainButton
-                window.Telegram.WebApp.MainButton.text = "Отправить заявку";
-                window.Telegram.WebApp.MainButton.color = "#ffcc00";
-                window.Telegram.WebApp.MainButton.textColor = "#000000";
-                window.Telegram.WebApp.MainButton.show();
-                console.log("✅ MainButton настроен");
-                addDebugInfo("✅ MainButton настроен", 'success');
-
-                // Обработчик MainButton
-                window.Telegram.WebApp.MainButton.onClick(function() {
-                    console.log("🔘 MainButton нажат");
-                    addDebugInfo("🔘 MainButton нажат", 'info');
-                    submitForm();
-                });
-
-            } catch (error) {
-                console.error("❌ Ошибка инициализации WebApp:", error);
-                addDebugInfo("❌ Ошибка инициализации: " + error.message, 'error');
-            }
-
-            // Установка цветов темы
-            const themeParams = window.Telegram.WebApp.themeParams;
-            if (themeParams) {
-                document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#ffffff');
-                document.documentElement.style.setProperty('--background-overlay', themeParams.bg_color || 'rgba(0, 0, 0, 0.7)');
-            }
-        }
+        console.log('✅ Скрипт полностью загружен');
 
         // Получение элементов формы
         const form = document.getElementById('applicationForm');
         const loadingSpinner = document.getElementById('loadingSpinner');
         const nickname = document.getElementById('nickname');
-        const discord = document.getElementById('discord');
+        const age = document.getElementById('age');
         const reason = document.getElementById('reason');
         const reasonCounter = document.getElementById('reasonCounter');
 
         // Прогресс бары
         const nicknameProgress = document.getElementById('nicknameProgress');
-        const discordProgress = document.getElementById('discordProgress');
+        const ageProgress = document.getElementById('ageProgress');
         const reasonProgress = document.getElementById('reasonProgress');
 
         // Отслеживание ввода для никнейма
@@ -621,62 +520,124 @@
             nicknameProgress.style.width = `${progress}%`;
         });
 
-        // Отслеживание ввода для Discord
-        discord.addEventListener('input', () => {
-            const value = discord.value.trim();
-            const progress = Math.min(value.length / 32 * 100, 100);
-            discordProgress.style.width = `${progress}%`;
+        // Отслеживание ввода для возраста
+        age.addEventListener('input', () => {
+            const value = parseInt(age.value);
+            const isValid = value >= 10 && value <= 99;
+
+            // Обновление стилей на основе валидности
+            if (isValid) {
+                age.style.borderColor = 'var(--secondary-color)';
+            } else {
+                age.style.borderColor = '#ff3333';
+            }
+
+            // Обновление прогресс-бара
+            const progress = isValid ? 100 : Math.min(value / 99 * 100, 100);
+            ageProgress.style.width = `${progress}%`;
         });
 
         // Отслеживание ввода для причины
         reason.addEventListener('input', () => {
-            const value = reason.value.trim();
-            const length = value.length;
-
-            // Обновление счетчика
-            reasonCounter.textContent = length;
+            const value = reason.value;
+            reasonCounter.textContent = value.length;
 
             // Обновление прогресс-бара
-            const progress = Math.min(length / 500 * 100, 100);
+            const progress = Math.min(value.length / 500 * 100, 100);
             reasonProgress.style.width = `${progress}%`;
-
-            // Изменение цвета счетчика при приближении к лимиту
-            if (length > 400) {
-                reasonCounter.style.color = '#ff9900';
-            }
-            if (length > 450) {
-                reasonCounter.style.color = '#ff3333';
-            }
-            if (length <= 400) {
-                reasonCounter.style.color = '#aaa';
-            }
         });
 
-        // Функция отправки формы
-        function submitForm() {
-            console.log('📤 Отправка формы...');
-            addDebugInfo("📤 Начинаем отправку формы", 'info');
+        // Проверка доступности Telegram WebApp API
+        if (!window.Telegram || !window.Telegram.WebApp) {
+            console.error("❌ Telegram WebApp API недоступен.");
+            addDebugInfo("❌ Telegram WebApp API недоступен - работаем в обычном режиме", 'error');
 
-            // Показываем спиннер загрузки
-            loadingSpinner.style.display = 'block';
+            // Скрываем MainButton если он есть
+            const submitButton = document.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.style.display = 'block';
+                submitButton.textContent = '📤 Отправить заявку (веб-режим)';
+            }
+        } else {
+            console.log("✅ Telegram WebApp API доступен");
+            addDebugInfo("✅ Telegram WebApp API доступен", 'success');
 
+            // Инициализация WebApp
+            window.Telegram.WebApp.ready();
+            console.log("✅ WebApp готов");
+
+            // Настройка MainButton
+            if (window.Telegram.WebApp.MainButton) {
+                window.Telegram.WebApp.MainButton.text = "📤 Отправить заявку";
+                window.Telegram.WebApp.MainButton.color = "#ffcc00";
+                window.Telegram.WebApp.MainButton.textColor = "#000000";
+                window.Telegram.WebApp.MainButton.show();
+
+                // Обработчик нажатия MainButton
+                window.Telegram.WebApp.MainButton.onClick(submitForm);
+                console.log("✅ MainButton настроен");
+            }
+
+            // Скрываем обычную кнопку формы
+            const submitButton = document.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.style.display = 'none';
+            }
+        }
+
+        // Функция отправки через API (fallback)
+        async function sendDataViaAPI(data) {
             try {
-                // Проверка доступности Telegram WebApp API
-                if (!window.Telegram || !window.Telegram.WebApp) {
-                    throw new Error("Telegram WebApp API недоступен. Откройте форму через Telegram бота.");
+                const response = await fetch('/api/applications', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                console.log("✅ Telegram WebApp API доступен для отправки");
-                addDebugInfo("✅ WebApp API готов", 'success');
+                const result = await response.json();
+                console.log("✅ Данные отправлены через API:", result);
+                addDebugInfo("✅ Заявка отправлена через веб-API!", 'success');
+
+                // Показываем сообщение об успехе
+                alert("🎉 Заявка успешно отправлена!\\n\\nМы рассмотрим её в ближайшее время.");
+
+                // Очищаем форму
+                form.reset();
+
+            } catch (error) {
+                console.error("❌ Ошибка API:", error);
+                throw new Error(`Ошибка отправки через API: ${error.message}`);
+            }
+        }
+
+        // Функция отправки формы
+        async function submitForm() {
+            try {
+                console.log("🚀 Начинаем отправку формы...");
+                addDebugInfo("🚀 Отправляем заявку...", 'info');
+
+                // Показываем спиннер
+                loadingSpinner.style.display = 'block';
+
+                // Скрываем MainButton
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.MainButton) {
+                    window.Telegram.WebApp.MainButton.hide();
+                }
 
                 // Получаем данные из формы
                 const nicknameValue = nickname.value.trim();
-                const discordValue = discord.value.trim();
+                const ageValue = parseInt(age.value);
                 const reasonValue = reason.value.trim();
 
                 console.log("📋 Сырые данные формы:");
                 console.log("  Никнейм:", nicknameValue);
-                console.log("  Discord:", discordValue);
+                console.log("  Возраст:", ageValue);
                 console.log("  Причина:", reasonValue);
 
                 // Валидация данных
@@ -688,56 +649,63 @@
                     throw new Error("Никнейм должен содержать только латинские буквы, цифры и символ _. Длина от 3 до 16 символов.");
                 }
 
+                if (!ageValue || ageValue < 10 || ageValue > 99) {
+                    throw new Error("Возраст должен быть от 10 до 99 лет");
+                }
+
                 // Очистка данных (используем простую очистку вместо DOMPurify)
                 const sanitizedNickname = nicknameValue.replace(/[<>]/g, '');
-                const sanitizedDiscord = discordValue.replace(/[<>]/g, '');
                 const sanitizedReason = reasonValue.replace(/[<>]/g, '');
 
                 // Формируем данные для отправки
                 const data = {
-                    nickname: sanitizedNickname,
-                    discord: sanitizedDiscord,
+                    minecraft_username: sanitizedNickname,
+                    age: ageValue,
                     reason: sanitizedReason,
+                    find_server: 'telegram_bot',
+                    minecraft_experience: 'not_specified',
+                    minecraft_preferences: 'not_specified',
+                    additional_info: sanitizedReason,
                     timestamp: new Date().toISOString(),
-                    source: 'webapp'
+                    source: 'telegram_webapp'
                 };
 
-                console.log("📦 Финальные данные для отправки:", data);
+                console.log("📦 Подготовленные данные:", data);
+
+                // Конвертируем в JSON
                 const jsonData = JSON.stringify(data);
-                console.log("📏 JSON размер:", jsonData.length, "символов");
-                console.log("📄 JSON строка:", jsonData);
+                console.log("📄 JSON данные:", jsonData);
 
-                addDebugInfo("📦 Данные подготовлены: " + jsonData.length + " символов", 'info');
+                // Проверяем, работаем ли мы в Telegram WebApp
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
+                    // КРИТИЧНО: Отправляем данные через Telegram WebApp
+                    window.Telegram.WebApp.sendData(jsonData);
+                    console.log("✅ sendData() вызван успешно!");
+                    addDebugInfo("✅ Данные отправлены через Telegram!", 'success');
 
-                // Проверяем функцию sendData
-                if (!window.Telegram.WebApp.sendData || typeof window.Telegram.WebApp.sendData !== 'function') {
-                    throw new Error("Функция sendData недоступна. Обновите Telegram до последней версии.");
-                }
-
-                console.log("🚀 Вызываем sendData...");
-                addDebugInfo("🚀 Отправляем данные...", 'info');
-
-                // КРИТИЧНО: Отправляем данные
-                window.Telegram.WebApp.sendData(jsonData);
-                console.log("✅ sendData() вызван успешно!");
-                addDebugInfo("✅ Данные отправлены!", 'success');
-
-                // Скрываем MainButton
-                if (window.Telegram.WebApp.MainButton) {
-                    window.Telegram.WebApp.MainButton.hide();
-                    console.log("✅ MainButton скрыт");
-                }
-
-                // Показываем сообщение об успехе
-                addDebugInfo("🎉 Заявка отправлена! Закрываем форму...", 'success');
-
-                // Закрываем Web App через 1 секунду
-                setTimeout(() => {
-                    console.log("🚪 Закрываем WebApp...");
-                    if (window.Telegram.WebApp.close) {
-                        window.Telegram.WebApp.close();
+                    // Скрываем MainButton
+                    if (window.Telegram.WebApp.MainButton) {
+                        window.Telegram.WebApp.MainButton.hide();
+                        console.log("✅ MainButton скрыт");
                     }
-                }, 1000);
+
+                    // Показываем сообщение об успехе
+                    addDebugInfo("🎉 Заявка отправлена! Закрываем форму...", 'success');
+
+                    // Закрываем Web App через 1 секунду
+                    setTimeout(() => {
+                        console.log("🚪 Закрываем WebApp...");
+                        if (window.Telegram.WebApp.close) {
+                            window.Telegram.WebApp.close();
+                        }
+                    }, 1000);
+                } else {
+                    // Fallback: отправляем данные через обычный HTTP запрос
+                    console.log("🌐 Fallback: отправляем через HTTP API");
+                    addDebugInfo("🌐 Отправляем через веб-API...", 'info');
+
+                    await sendDataViaAPI(data);
+                }
 
             } catch (error) {
                 console.error("❌ Ошибка:", error.message);
@@ -746,7 +714,34 @@
 
                 // Показываем пользователю понятное сообщение
                 const errorMsg = error.message || "Неизвестная ошибка";
-                alert(`❌ Ошибка отправки заявки:\n\n${errorMsg}\n\nПопробуйте еще раз или обратитесь к администратору.`);
+
+                // Создаем красивое уведомление об ошибке
+                const errorNotification = document.createElement('div');
+                errorNotification.style.cssText = `
+                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    background: #ff4444; color: white; padding: 20px; border-radius: 10px;
+                    border: 3px solid #000; box-shadow: 4px 4px 0px #000;
+                    font-family: 'Press Start 2P', cursive; font-size: 12px;
+                    max-width: 90%; text-align: center; z-index: 10000;
+                    animation: fadeIn 0.5s ease-in-out;
+                `;
+                errorNotification.innerHTML = `
+                    <div style="margin-bottom: 15px;">❌ Ошибка отправки заявки</div>
+                    <div style="font-size: 10px; margin-bottom: 15px;">${errorMsg}</div>
+                    <button onclick="this.parentElement.remove()" style="
+                        background: #fff; color: #000; border: 2px solid #000;
+                        padding: 8px 16px; border-radius: 5px; cursor: pointer;
+                        font-family: 'Press Start 2P', cursive; font-size: 10px;
+                    ">Закрыть</button>
+                `;
+                document.body.appendChild(errorNotification);
+
+                // Удаляем уведомление через 10 секунд
+                setTimeout(() => {
+                    if (errorNotification.parentElement) {
+                        errorNotification.remove();
+                    }
+                }, 10000);
 
                 loadingSpinner.style.display = 'none';
 
@@ -754,17 +749,17 @@
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.MainButton) {
                     window.Telegram.WebApp.MainButton.show();
                 }
+            } finally {
+                // Всегда скрываем спиннер
+                loadingSpinner.style.display = 'none';
             }
         }
 
-        // Обработка отправки формы (fallback)
-        form.addEventListener('submit', async (e) => {
+        // Обработчик отправки формы (для обычного режима)
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
-            console.log('📝 Форма отправлена через submit');
             submitForm();
         });
-
-        console.log('✅ Скрипт полностью загружен');
     </script>
 </body>
 </html>
