@@ -458,6 +458,14 @@
 
         console.log('🚀 Инициализация PlayLand WebApp...');
 
+        // Диагностика Telegram WebApp
+        console.log('🔍 Диагностика Telegram WebApp:');
+        console.log('  window.Telegram:', !!window.Telegram);
+        console.log('  window.Telegram.WebApp:', !!window.Telegram?.WebApp);
+        console.log('  window.Telegram.WebApp.sendData:', !!window.Telegram?.WebApp?.sendData);
+        console.log('  window.Telegram.WebApp.initData:', window.Telegram?.WebApp?.initData);
+        console.log('  window.Telegram.WebApp.initDataUnsafe:', window.Telegram?.WebApp?.initDataUnsafe);
+
         // Получение элементов формы
         const form = document.getElementById('applicationForm');
         const loadingSpinner = document.getElementById('loadingSpinner');
@@ -694,7 +702,15 @@
                 console.log("📄 JSON данные:", jsonData);
 
                 // Проверяем, работаем ли мы в Telegram WebApp
+                console.log("🔍 Проверка Telegram WebApp перед отправкой:");
+                console.log("  window.Telegram:", !!window.Telegram);
+                console.log("  window.Telegram.WebApp:", !!window.Telegram?.WebApp);
+                console.log("  window.Telegram.WebApp.sendData:", !!window.Telegram?.WebApp?.sendData);
+
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
+                    console.log("✅ Telegram WebApp доступен, отправляем данные...");
+                    console.log("📦 Отправляемые данные:", jsonData);
+
                     // КРИТИЧНО: Отправляем данные через Telegram WebApp
                     window.Telegram.WebApp.sendData(jsonData);
                     console.log("✅ sendData() вызван успешно!");
@@ -760,6 +776,24 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Инициализация Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            console.log("🔧 Инициализация Telegram WebApp...");
+            window.Telegram.WebApp.ready();
+            console.log("✅ Telegram WebApp готов!");
+
+            // Показываем MainButton для отправки
+            if (window.Telegram.WebApp.MainButton) {
+                window.Telegram.WebApp.MainButton.setText("Отправить заявку");
+                window.Telegram.WebApp.MainButton.show();
+                window.Telegram.WebApp.MainButton.onClick(() => {
+                    console.log("🔘 MainButton нажат!");
+                    submitForm();
+                });
+                console.log("✅ MainButton настроен!");
+            }
+        }
 
         console.log("✅ PlayLand WebApp полностью инициализирован!");
     </script>
